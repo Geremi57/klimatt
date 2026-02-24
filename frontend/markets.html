@@ -1,321 +1,329 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Klimat - Market Prices</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="manifest" href="manifest.json">
-    
+    <link rel="stylesheet" href="styles.css" />
+    <!-- <link rel="manifest" href="manifest.json" /> -->
+
     <style>
-        /* Additional market-specific styles */
-        .update-info {
-            background: #e3f2fd;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            font-size: 0.9rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .update-info.stale {
-            background: #fff3cd;
-            color: #856404;
-        }
-        
-        .stale-badge {
-            background: #856404;
-            color: white;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-        }
-        
-        .market-card {
-            background: white;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: var(--shadow);
-            border-left: 4px solid var(--primary-color);
-        }
-        
-        .market-header {
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-            margin-bottom: 10px;
-        }
-        
-        .market-header h3 {
-            margin: 0;
-            color: var(--primary-color);
-            font-size: 1.2rem;
-        }
-        
-        .market-prices {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        
-        .price-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px;
-            background: #f8f9fa;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        
-        .price-row:hover {
-            background: #e9ecef;
-        }
-        
-        .product-name {
-            font-weight: 500;
-        }
-        
-        .price-value {
-            font-weight: bold;
-            color: var(--primary-color);
-        }
-        
-        .trend-icon {
-            margin-left: 5px;
-            font-size: 1.1rem;
-        }
-        
-        .filter-bar {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .product-filters {
-            display: flex;
-            gap: 5px;
-            flex-wrap: wrap;
-        }
-        
-        .product-filter-btn {
-            padding: 8px 16px;
-            border: 1px solid var(--border-color);
-            background: white;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .product-filter-btn.active {
-            background: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
-        }
-        
-        .market-select {
-            padding: 8px;
-            border-radius: 5px;
-            border: 1px solid var(--border-color);
-            background: white;
-            min-width: 150px;
-        }
-        
-        .refresh-btn {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            margin-left: auto;
-        }
-        
-        .refresh-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-        
-        .current-price-large {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--primary-color);
-            text-align: center;
-            margin: 20px 0;
-        }
-        
-        .trend-badge {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            margin-left: 10px;
-        }
-        
-        .trend-badge.up {
-            background: #d4edda;
-            color: #155724;
-        }
-        
-        .trend-badge.down {
-            background: #f8d7da;
-            color: #721c24;
-        }
-        
-        .trend-badge.stable {
-            background: #e2e3e5;
-            color: #383d41;
-        }
-        
-        .price-history {
-            margin: 20px 0;
-        }
-        
-        .chart-container {
-            display: flex;
-            align-items: flex-end;
-            height: 150px;
-            gap: 10px;
-            margin-top: 15px;
-            padding: 10px 0;
-        }
-        
-        .chart-bar {
-            flex: 1;
-            background: var(--primary-color);
-            min-height: 20px;
-            border-radius: 5px 5px 0 0;
-            position: relative;
-            transition: height 0.3s;
-        }
-        
-        .chart-bar:hover .bar-tooltip {
-            display: block;
-        }
-        
-        .bar-tooltip {
-            display: none;
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.8);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            white-space: nowrap;
-            z-index: 10;
-        }
-        
-        .other-markets {
-            margin-top: 20px;
-            border-top: 1px solid #eee;
-            padding-top: 15px;
-        }
-        
-        .compare-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        
-        .compare-price {
-            font-weight: bold;
-        }
-        
-        .comparison-note {
-            text-align: center;
-            color: #666;
-            font-size: 0.9rem;
-            margin-top: 20px;
-            padding: 10px;
-            background: #e8f5e9;
-            border-radius: 5px;
-        }
-        
-        .no-data {
-            text-align: center;
-            padding: 40px;
-            color: #666;
-        }
-        
-        .no-data .small {
-            font-size: 0.9rem;
-            color: #999;
-            margin-top: 10px;
-        }
+      /* Additional market-specific styles */
+      .update-info {
+        background: #e3f2fd;
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        font-size: 0.9rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .update-info.stale {
+        background: #fff3cd;
+        color: #856404;
+      }
+
+      .stale-badge {
+        background: #856404;
+        color: white;
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+      }
+
+      .market-card {
+        background: white;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 15px;
+        box-shadow: var(--shadow);
+        border-left: 4px solid var(--primary-color);
+      }
+
+      .market-header {
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+      }
+
+      .market-header h3 {
+        margin: 0;
+        color: var(--primary-color);
+        font-size: 1.2rem;
+      }
+
+      .market-prices {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .price-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px;
+        background: #f8f9fa;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+
+      .price-row:hover {
+        background: #e9ecef;
+      }
+
+      .product-name {
+        font-weight: 500;
+      }
+
+      .price-value {
+        font-weight: bold;
+        color: var(--primary-color);
+      }
+
+      .trend-icon {
+        margin-left: 5px;
+        font-size: 1.1rem;
+      }
+
+      .filter-bar {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+
+      .product-filters {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+      }
+
+      .product-filter-btn {
+        padding: 8px 16px;
+        border: 1px solid var(--border-color);
+        background: white;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .product-filter-btn.active {
+        background: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+      }
+
+      .market-select {
+        padding: 8px;
+        border-radius: 5px;
+        border: 1px solid var(--border-color);
+        background: white;
+        min-width: 150px;
+      }
+
+      .refresh-btn {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-left: auto;
+      }
+
+      .refresh-btn:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+      }
+
+      .current-price-large {
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--primary-color);
+        text-align: center;
+        margin: 20px 0;
+      }
+
+      .trend-badge {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        margin-left: 10px;
+      }
+
+      .trend-badge.up {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .trend-badge.down {
+        background: #f8d7da;
+        color: #721c24;
+      }
+
+      .trend-badge.stable {
+        background: #e2e3e5;
+        color: #383d41;
+      }
+
+      .price-history {
+        margin: 20px 0;
+      }
+
+      .chart-container {
+        display: flex;
+        align-items: flex-end;
+        height: 150px;
+        gap: 10px;
+        margin-top: 15px;
+        padding: 10px 0;
+      }
+
+      .chart-bar {
+        flex: 1;
+        background: var(--primary-color);
+        min-height: 20px;
+        border-radius: 5px 5px 0 0;
+        position: relative;
+        transition: height 0.3s;
+      }
+
+      .chart-bar:hover .bar-tooltip {
+        display: block;
+      }
+
+      .bar-tooltip {
+        display: none;
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        white-space: nowrap;
+        z-index: 10;
+      }
+
+      .other-markets {
+        margin-top: 20px;
+        border-top: 1px solid #eee;
+        padding-top: 15px;
+      }
+
+      .compare-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px;
+        border-bottom: 1px solid #f0f0f0;
+      }
+
+      .compare-price {
+        font-weight: bold;
+      }
+
+      .comparison-note {
+        text-align: center;
+        color: #666;
+        font-size: 0.9rem;
+        margin-top: 20px;
+        padding: 10px;
+        background: #e8f5e9;
+        border-radius: 5px;
+      }
+
+      .no-data {
+        text-align: center;
+        padding: 40px;
+        color: #666;
+      }
+
+      .no-data .small {
+        font-size: 0.9rem;
+        color: #999;
+        margin-top: 10px;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="app-container">
-        <!-- Header -->
-        <div class="app-header">
-            <div class="header-left">
-                <h1>💰 Market Prices</h1>
-            </div>
-            <div class="header-right">
-                <span id="onlineBadge" class="online-badge">🟢 Online</span>
-            </div>
+      <!-- Header -->
+      <div class="app-header">
+        <div class="header-left">
+          <h1>💰 Market Prices</h1>
         </div>
-        
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Filter Bar -->
-            <div class="filter-bar">
-                <div class="product-filters">
-                    <button class="product-filter-btn active" data-product="all">All</button>
-                    <button class="product-filter-btn" data-product="maize">🌽 Maize</button>
-                    <button class="product-filter-btn" data-product="beans">🫘 Beans</button>
-                    <button class="product-filter-btn" data-product="cassava">🌱 Cassava</button>
-                </div>
-                
-                <select id="marketSelect" class="market-select">
-                    <option value="all">All Markets</option>
-                </select>
-                
-                <button id="refreshPrices" class="refresh-btn">
-                    <span>🔄</span> Refresh
-                </button>
-            </div>
-            
-            <!-- Prices Container -->
-            <div id="pricesContainer" class="prices-container">
-                <div class="loading">Loading prices...</div>
-            </div>
+        <div class="header-right">
+          <span id="onlineBadge" class="online-badge">🟢 Online</span>
         </div>
-        
-        <!-- Bottom Navigation -->
-        <nav class="bottom-nav">
-            <a href="index.html" class="nav-item">
-                <span class="nav-icon">🏠</span>
-                <span class="nav-label">Home</span>
-            </a>
-            <a href="calendar.html" class="nav-item">
-                <span class="nav-icon">📅</span>
-                <span class="nav-label">Calendar</span>
-            </a>
-            <a href="pests.html" class="nav-item">
-                <span class="nav-icon">🐛</span>
-                <span class="nav-label">Pests</span>
-            </a>
-            <a href="markets.html" class="nav-item active">
-                <span class="nav-icon">💰</span>
-                <span class="nav-label">Markets</span>
-            </a>
-        </nav>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+          <div class="product-filters">
+            <button class="product-filter-btn active" data-product="all">
+              All
+            </button>
+            <button class="product-filter-btn" data-product="maize">
+              🌽 Maize
+            </button>
+            <button class="product-filter-btn" data-product="beans">
+              🫘 Beans
+            </button>
+            <button class="product-filter-btn" data-product="cassava">
+              🌱 Cassava
+            </button>
+          </div>
+
+          <select id="marketSelect" class="market-select">
+            <option value="all">All Markets</option>
+          </select>
+
+          <button id="refreshPrices" class="refresh-btn">
+            <span>🔄</span> Refresh
+          </button>
+        </div>
+
+        <!-- Prices Container -->
+        <div id="pricesContainer" class="prices-container">
+          <div class="loading">Loading prices...</div>
+        </div>
+      </div>
+
+      <!-- Bottom Navigation -->
+      <nav class="bottom-nav">
+        <a href="index.html" class="nav-item">
+          <span class="nav-icon">🏠</span>
+          <span class="nav-label">Home</span>
+        </a>
+        <a href="calendar.html" class="nav-item">
+          <span class="nav-icon">📅</span>
+          <span class="nav-label">Calendar</span>
+        </a>
+        <a href="pests.html" class="nav-item">
+          <span class="nav-icon">🐛</span>
+          <span class="nav-label">Pests</span>
+        </a>
+        <a href="markets.html" class="nav-item active">
+          <span class="nav-icon">💰</span>
+          <span class="nav-label">Markets</span>
+        </a>
+      </nav>
     </div>
-    
+
     <!-- Scripts -->
     <script src="app.js"></script>
     <script src="markets.js"></script>
-</body>
+  </body>
 </html>
