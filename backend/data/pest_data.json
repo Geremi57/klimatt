@@ -1,0 +1,314 @@
+{
+  "pests": {
+    "pest_faw_001": {
+      "id": "pest_faw_001",
+      "name": "Fall Armyworm",
+      "localName": "Kitumbe",
+      "scientificName": "Spodoptera frugiperda",
+      "crops": ["maize", "sorghum", "millet"],
+      "symptoms": ["holes", "caterpillar", "sawdust"],
+      "quickTreatment": "Apply ash or neem oil immediately. Remove affected leaves. Report to agricultural extension officer.",
+      "imageThumb": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%2397BC62'/%3E%3Ctext x='50' y='70' font-size='50' text-anchor='middle' fill='%232C5F2D'%3E🐛%3C/text%3E%3C/svg%3E",
+      "hasFullDetails": true,
+      "confidence": "high"
+    },
+    "pest_stemborer_001": {
+      "id": "pest_stemborer_001",
+      "name": "Stem Borer",
+      "localName": "Mtobvu",
+      "scientificName": "Busseola fusca",
+      "crops": ["maize", "sorghum", "millet", "sugarcane"],
+      "symptoms": ["sawdust", "holes", "wilting", "deadheart"],
+      "quickTreatment": "Remove and destroy affected stems. Burn them. Practice crop rotation.",
+      "imageThumb": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%2397BC62'/%3E%3Ctext x='50' y='70' font-size='50' text-anchor='middle' fill='%232C5F2D'%3E🪱%3C/text%3E%3C/svg%3E",
+      "hasFullDetails": true,
+      "confidence": "high"
+    },
+    "pest_aphid_001": {
+      "id": "pest_aphid_001",
+      "name": "Aphids",
+      "localName": "Nyungu",
+      "scientificName": "Aphidoidea",
+      "crops": ["beans", "cassava", "peas", "cowpea"],
+      "symptoms": ["sticky", "discolored", "wilting", "ants"],
+      "quickTreatment": "Spray with soapy water (1 tablespoon soap per liter). Use neem oil spray. Introduce ladybugs.",
+      "imageThumb": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%2397BC62'/%3E%3Ctext x='50' y='70' font-size='50' text-anchor='middle' fill='%232C5F2D'%3E🐜%3C/text%3E%3C/svg%3E",
+      "hasFullDetails": true,
+      "confidence": "high"
+    },
+    "pest_beanfly_001": {
+      "id": "pest_beanfly_001",
+      "name": "Bean Fly",
+      "localName": "Nzi wa Maharagwe",
+      "scientificName": "Ophiomyia phaseoli",
+      "crops": ["beans", "soybean", "cowpea"],
+      "symptoms": ["wilting", "yellowing", "swollen stem"],
+      "quickTreatment": "Plant early. Use resistant varieties. Remove and destroy affected plants.",
+      "imageThumb": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%2397BC62'/%3E%3Ctext x='50' y='70' font-size='50' text-anchor='middle' fill='%232C5F2D'%3E🪰%3C/text%3E%3C/svg%3E",
+      "hasFullDetails": true,
+      "confidence": "medium"
+    },
+    "pest_cassava_mosaic": {
+      "id": "pest_cassava_mosaic",
+      "name": "Cassava Mosaic Disease",
+      "localName": "Uganda",
+      "scientificName": "Cassava mosaic virus",
+      "crops": ["cassava"],
+      "symptoms": ["discolored", "mosaic", "stunted", "yellowing"],
+      "quickTreatment": "Use disease-free cuttings. Remove infected plants. Plant resistant varieties.",
+      "imageThumb": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%2397BC62'/%3E%3Ctext x='50' y='70' font-size='50' text-anchor='middle' fill='%232C5F2D'%3E🍂%3C/text%3E%3C/svg%3E",
+      "hasFullDetails": true,
+      "confidence": "high"
+    },
+    "pest_cassava_greenmite": {
+      "id": "pest_cassava_greenmite",
+      "name": "Cassava Green Mite",
+      "localName": "Utitiri",
+      "scientificName": "Mononychellus tanajoa",
+      "crops": ["cassava"],
+      "symptoms": ["discolored", "stunted", "yellowing", "webbing"],
+      "quickTreatment": "Use resistant varieties. Spray with sulfur or neem oil. Introduce predatory mites.",
+      "imageThumb": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%2397BC62'/%3E%3Ctext x='50' y='70' font-size='50' text-anchor='middle' fill='%232C5F2D'%3E🕷️%3C/text%3E%3C/svg%3E",
+      "hasFullDetails": true,
+      "confidence": "medium"
+    },
+    "pest_armyworm_001": {
+      "id": "pest_armyworm_001",
+      "name": "Armyworm",
+      "localName": "Kiwavi",
+      "scientificName": "Spodoptera exempta",
+      "crops": ["maize", "sorghum", "millet", "wheat", "rice"],
+      "symptoms": ["holes", "caterpillar", "defoliation"],
+      "quickTreatment": "Apply ash or neem oil. Dig trenches around fields to stop marching larvae.",
+      "imageThumb": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%2397BC62'/%3E%3Ctext x='50' y='70' font-size='50' text-anchor='middle' fill='%232C5F2D'%3E🐛%3C/text%3E%3C/svg%3E",
+      "hasFullDetails": true,
+      "confidence": "high"
+    },
+    "pest_cutworm_001": {
+      "id": "pest_cutworm_001",
+      "name": "Cutworm",
+      "localName": "Mnyoo",
+      "scientificName": "Agrotis ipsilon",
+      "crops": ["maize", "beans", "vegetables", "cotton"],
+      "symptoms": ["cut stems", "wilting", "seedling damage"],
+      "quickTreatment": "Place collars around seedlings. Handpick at night. Keep field weed-free.",
+      "imageThumb": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%2397BC62'/%3E%3Ctext x='50' y='70' font-size='50' text-anchor='middle' fill='%232C5F2D'%3E🪱%3C/text%3E%3C/svg%3E",
+      "hasFullDetails": true,
+      "confidence": "medium"
+    },
+    "pest_whitefly_001": {
+      "id": "pest_whitefly_001",
+      "name": "Whitefly",
+      "localName": "Nzi Mweupe",
+      "scientificName": "Bemisia tabaci",
+      "crops": ["cassava", "beans", "tomatoes", "cotton"],
+      "symptoms": ["sticky", "yellowing", "sooty mold", "stunted"],
+      "quickTreatment": "Use yellow sticky traps. Spray with neem oil. Introduce parasitic wasps.",
+      "imageThumb": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%2397BC62'/%3E%3Ctext x='50' y='70' font-size='50' text-anchor='middle' fill='%232C5F2D'%3E🦋%3C/text%3E%3C/svg%3E",
+      "hasFullDetails": true,
+      "confidence": "medium"
+    },
+    "pest_thrips_001": {
+      "id": "pest_thrips_001",
+      "name": "Thrips",
+      "localName": "Thiripsi",
+      "scientificName": "Thysanoptera",
+      "crops": ["beans", "onions", "cotton", "peas"],
+      "symptoms": ["silvery leaves", "discolored", "stunted", "deformed"],
+      "quickTreatment": "Spray with neem oil or soapy water. Use blue sticky traps.",
+      "imageThumb": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%2397BC62'/%3E%3Ctext x='50' y='70' font-size='50' text-anchor='middle' fill='%232C5F2D'%3E🐞%3C/text%3E%3C/svg%3E",
+      "hasFullDetails": false,
+      "confidence": "low"
+    }
+  },
+  "pest_details": {
+    "pest_faw_001": {
+      "id": "pest_faw_001",
+      "description": "Fall Armyworm is a destructive pest that attacks maize, sorghum, and other crops. The larvae feed on leaves and can completely defoliate plants within days. They are called 'armyworm' because they move in large groups like an army, devouring everything in their path.",
+      "lifecycle": [
+        "🟢 Egg stage (2-3 days): Eggs laid in clusters of 100-200 on leaves, covered with scales",
+        "🐛 Larval stage (14-21 days): 6 growth stages, most damaging period",
+        "🟤 Pupal stage (8-30 days in soil): Depends on temperature",
+        "🦋 Adult moth (7-21 days): Can fly up to 100km per night"
+      ],
+      "identification": [
+        "Inverted Y-shape on head - most distinctive feature",
+        "Four spots arranged in a square on back end",
+        "Rough, granular skin texture",
+        "Young larvae are green, older become brown"
+      ],
+      "treatment_options": [
+        {
+          "method": "Immediate Actions",
+          "options": [
+            "Handpick and destroy caterpillars",
+            "Apply wood ash mixed with soil around plant base",
+            "Spray neem solution (50g neem seeds in 1L water)",
+            "Apply chili-pepper spray"
+          ]
+        },
+        {
+          "method": "Biological Control",
+          "options": [
+            "Introduce natural enemies: parasitic wasps, ladybugs, ants",
+            "Plant repellent crops: coriander, marigold, desmodium",
+            "Use biopesticides like Bacillus thuringiensis (Bt)"
+          ]
+        },
+        {
+          "method": "Chemical Control (if severe)",
+          "options": [
+            "Emamectin benzoate - 2ml per liter",
+            "Spinetoram - follow label instructions",
+            "Lambda-cyhalothrin - apply in evening",
+            "⚠️ Always wear protective gear. Follow safety intervals."
+          ]
+        }
+      ],
+      "prevention": [
+        "Early planting (avoid peak pest season)",
+        "Regular field scouting - check 20 plants randomly",
+        "Crop rotation with non-cereal crops",
+        "Intercrop with desmodium or push-pull technology",
+        "Conserve natural enemies",
+        "Destroy crop residues after harvest"
+      ],
+      "images": [
+        "https://via.placeholder.com/300/97BC62/ffffff?text=FAW+Larva",
+        "https://via.placeholder.com/300/97BC62/ffffff?text=FAW+Damage",
+        "https://via.placeholder.com/300/97BC62/ffffff?text=FAW+Adult",
+        "https://via.placeholder.com/300/97BC62/ffffff?text=FAW+Eggs"
+      ],
+      "local_advice": [
+        "In Eastern Kenya, farmers mix ash with crushed chili - more effective",
+        "In Western Uganda, farmers use crushed tobacco leaves soaked in water",
+        "In Tanzania, early planting before March reduces infestation by 60%"
+      ],
+      "similar_pests": [
+        {
+          "name": "Stem Borer",
+          "difference": "Lives INSIDE stem, smooth skin"
+        },
+        {
+          "name": "Armyworm",
+          "difference": "No Y-shape on head, marches in groups"
+        }
+      ],
+      "seasonal_alert": {
+        "active": true,
+        "warning": "High risk period: March - May and October - December",
+        "action": "Scout fields every 3 days during these periods"
+      }
+    },
+    "pest_stemborer_001": {
+      "id": "pest_stemborer_001",
+      "description": "Stem borers are caterpillars that bore into plant stems, causing 'dead hearts' where the central shoot dies. They are one of the most destructive pests of maize and sorghum in Africa.",
+      "lifecycle": [
+        "🥚 Eggs: Laid on leaves, hatch in 5-10 days",
+        "🐛 Larvae: Bore into stem, feed for 25-35 days",
+        "🟤 Pupae: Inside stem for 10-14 days",
+        "🦋 Moths: Emerge, live 5-10 days"
+      ],
+      "identification": [
+        "Sawdust-like frass (droppings) around entry holes",
+        "Dead heart - central whorl dries up",
+        "Broken stems or tassels",
+        "Larvae are cream with brown spots"
+      ],
+      "treatment_options": [
+        {
+          "method": "Cultural Control",
+          "options": [
+            "Remove and destroy affected stems",
+            "Burn crop residues after harvest",
+            "Crop rotation with legumes",
+            "Early planting to escape peak infestation"
+          ]
+        },
+        {
+          "method": "Biological Control",
+          "options": [
+            "Conserve natural enemies: ants, earwigs, birds",
+            "Release parasitic wasps (Cotesia flavipes)",
+            "Use push-pull technology with desmodium"
+          ]
+        },
+        {
+          "method": "Chemical Control",
+          "options": [
+            "Apply granules into whorl",
+            "Cypermethrin - 30ml per 20L water",
+            "⚠️ Apply before larvae bore into stem"
+          ]
+        }
+      ],
+      "prevention": [
+        "Plant resistant varieties",
+        "Intercrop with legumes",
+        "Destroy crop residues completely",
+        "Keep field weed-free",
+        "Use pheromone traps for monitoring"
+      ],
+      "images": [
+        "https://via.placeholder.com/300/97BC62/ffffff?text=Stem+Borer+Larva",
+        "https://via.placeholder.com/300/97BC62/ffffff?text=Dead+Heart",
+        "https://via.placeholder.com/300/97BC62/ffffff?text=Stem+Damage"
+      ]
+    },
+    "pest_aphid_001": {
+      "id": "pest_aphid_001",
+      "description": "Aphids are small soft-bodied insects that cluster on young leaves and stems, sucking plant sap. They secrete honeydew which attracts ants and grows sooty mold.",
+      "lifecycle": [
+        "🟢 Nymphs: Born live, start feeding immediately",
+        "🟤 Adults: Winged or wingless, reproduce rapidly",
+        "🔄 Can produce 10-20 generations per season"
+      ],
+      "identification": [
+        "Clusters of small green/black insects on young growth",
+        "Sticky honeydew on leaves",
+        "Ants crawling on plants (they farm aphids)",
+        "Curled, yellowing leaves",
+        "Black sooty mold on leaves"
+      ],
+      "treatment_options": [
+        {
+          "method": "Organic Control",
+          "options": [
+            "Spray with soapy water (1 tbsp soap per liter)",
+            "Neem oil spray - 5ml per liter",
+            "Strong water spray to knock them off",
+            "Garlic or chili spray"
+          ]
+        },
+        {
+          "method": "Biological Control",
+          "options": [
+            "Introduce ladybugs (each eats 50 aphids/day)",
+            "Lacewing larvae",
+            "Hoverfly larvae",
+            "Parasitic wasps"
+          ]
+        },
+        {
+          "method": "Chemical Control",
+          "options": [
+            "Pyrethrins",
+            "Imidacloprid (systemic)",
+            "⚠️ Avoid broad-spectrum insecticides that kill beneficials"
+          ]
+        }
+      ],
+      "prevention": [
+        "Check plants regularly",
+        "Avoid excess nitrogen fertilizer",
+        "Plant companion plants: marigold, garlic, onions",
+        "Use reflective mulches to repel aphids"
+      ],
+      "images": [
+        "https://via.placeholder.com/300/97BC62/ffffff?text=Aphids+on+Bean",
+        "https://via.placeholder.com/300/97BC62/ffffff?text=Ladybug+eating+Aphids",
+        "https://via.placeholder.com/300/97BC62/ffffff?text=Sooty+Mold"
+      ]
+    }
+  }
+}
