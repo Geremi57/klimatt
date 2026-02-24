@@ -1,0 +1,173 @@
+{
+  "regions": [
+    {
+      "id": "eastern_kenya",
+      "name": "Eastern Province, Kenya",
+      "zone": "mid_altitude",
+      "rainfall": {
+        "long_rains": {
+          "start": "March 20",
+          "end": "May 15",
+          "start_month": 3,
+          "start_day": 20,
+          "end_month": 5,
+          "end_day": 15
+        },
+        "short_rains": {
+          "start": "October 15",
+          "end": "December 10",
+          "start_month": 10,
+          "start_day": 15,
+          "end_month": 12,
+          "end_day": 10
+        }
+      }
+    }
+  ],
+  "crops": {
+    "maize": {
+      "id": "maize",
+      "name": "Maize",
+      "varieties": ["Drought-resistant", "Hybrid", "Local"],
+      "seasons": {
+        "long_rains": {
+          "planting_window": {
+            "start": "March 25",
+            "end": "April 15",
+            "start_month": 3,
+            "start_day": 25,
+            "end_month": 4,
+            "end_day": 15
+          },
+          "tasks": [
+            {
+              "id": "maize_land_prep",
+              "name": "Land Preparation",
+              "phase": "pre_planting",
+              "days_from_planting": -7,
+              "description": "Clear field, plough to 20cm depth. Remove weeds.",
+              "icon": "🚜",
+              "priority": "high"
+            },
+            {
+              "id": "maize_planting",
+              "name": "Plant Maize",
+              "phase": "planting",
+              "days_from_planting": 0,
+              "description": "Plant 2 seeds per hole, 75cm between rows, 30cm between plants.",
+              "icon": "🌱",
+              "priority": "critical",
+              "checklist": [
+                "Use certified seeds",
+                "Plant after rain when soil is moist",
+                "Depth: 3-5cm"
+              ]
+            },
+            {
+              "id": "maize_germination_check",
+              "name": "Check Germination",
+              "phase": "vegetative",
+              "days_from_planting": 7,
+              "description": "Check if seeds have germinated. Replant any gaps.",
+              "icon": "🌿",
+              "priority": "medium"
+            },
+            {
+              "id": "maize_first_weeding",
+              "name": "First Weeding",
+              "phase": "vegetative",
+              "days_from_planting": 21,
+              "description": "Remove weeds manually. Don't use herbicides.",
+              "icon": "🌿",
+              "priority": "high"
+            },
+            {
+              "id": "maize_fertilizer",
+              "name": "First Fertilizer",
+              "phase": "vegetative",
+              "days_from_planting": 28,
+              "description": "Apply DAP fertilizer near plant base.",
+              "icon": "🧪",
+              "priority": "medium"
+            },
+            {
+              "id": "maize_pest_scout",
+              "name": "Pest Scouting",
+              "phase": "vegetative",
+              "days_from_planting": 14,
+              "recurring": true,
+              "recurrence_days": 7,
+              "description": "Check for Fall Armyworm and other pests.",
+              "icon": "🐛",
+              "priority": "critical"
+            },
+            {
+              "id": "maize_harvest",
+              "name": "Harvest",
+              "phase": "harvest",
+              "days_from_planting": 120,
+              "description": "Harvest when husks are dry and kernels are hard.",
+              "icon": "🌽",
+              "priority": "high"
+            }
+          ]
+        }
+      }
+    },
+    "beans": {
+      "id": "beans",
+      "name": "Beans",
+      "varieties": ["Local", "Improved"],
+      "seasons": {
+        "long_rains": {
+          "planting_window": {
+            "start": "April 1",
+            "end": "April 20",
+            "start_month": 4,
+            "start_day": 1,
+            "end_month": 4,
+            "end_day": 20
+          },
+          "tasks": [
+            {
+              "id": "beans_land_prep",
+              "name": "Land Preparation",
+              "phase": "pre_planting",
+              "days_from_planting": -5,
+              "description": "Prepare seed beds.",
+              "icon": "🚜",
+              "priority": "high"
+            },
+            {
+              "id": "beans_planting",
+              "name": "Plant Beans",
+              "phase": "planting",
+              "days_from_planting": 0,
+              "description": "Plant 2 seeds per hole, 50cm between rows.",
+              "icon": "🌱",
+              "priority": "critical"
+            },
+            {
+              "id": "beans_weeding",
+              "name": "First Weeding",
+              "phase": "vegetative",
+              "days_from_planting": 21,
+              "description": "Remove weeds carefully.",
+              "icon": "🌿",
+              "priority": "high"
+            },
+            {
+              "id": "beans_harvest",
+              "name": "Harvest",
+              "phase": "harvest",
+              "days_from_planting": 90,
+              "description": "Harvest when pods are dry.",
+              "icon": "🫘",
+              "priority": "high"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
