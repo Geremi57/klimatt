@@ -28,6 +28,7 @@ async function initCalendarPage() {
 /**
  * Update the date display
  */
+
 function updateDateDisplay() {
     const options = { 
         weekday: 'long', 
