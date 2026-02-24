@@ -1,0 +1,164 @@
+{
+  "markets": [
+    {
+      "id": "market_001",
+      "name": "Central Market",
+      "region": "eastern_kenya",
+      "distance": 5,
+      "latitude": -1.2921,
+      "longitude": 36.8219
+    },
+    {
+      "id": "market_002",
+      "name": "Town Market",
+      "region": "eastern_kenya",
+      "distance": 12,
+      "latitude": -1.2833,
+      "longitude": 36.8167
+    },
+    {
+      "id": "market_003",
+      "name": "Farmers Cooperative",
+      "region": "eastern_kenya",
+      "distance": 8,
+      "latitude": -1.2789,
+      "longitude": 36.8234
+    },
+    {
+      "id": "market_004",
+      "name": "Weekly Market",
+      "region": "eastern_kenya",
+      "distance": 15,
+      "latitude": -1.3012,
+      "longitude": 36.8345
+    }
+  ],
+  "prices": [
+    {
+      "id": "price_001",
+      "marketId": "market_001",
+      "marketName": "Central Market",
+      "product": "maize",
+      "productName": "Maize",
+      "price": 45.50,
+      "unit": "kg",
+      "currency": "KES",
+      "date": "2026-04-01T08:00:00Z",
+      "trend": "up"
+    },
+    {
+      "id": "price_002",
+      "marketId": "market_002",
+      "marketName": "Town Market",
+      "product": "maize",
+      "productName": "Maize",
+      "price": 44.00,
+      "unit": "kg",
+      "currency": "KES",
+      "date": "2026-04-01T09:30:00Z",
+      "trend": "stable"
+    },
+    {
+      "id": "price_003",
+      "marketId": "market_003",
+      "marketName": "Farmers Cooperative",
+      "product": "maize",
+      "productName": "Maize",
+      "price": 46.20,
+      "unit": "kg",
+      "currency": "KES",
+      "date": "2026-04-02T10:15:00Z",
+      "trend": "up"
+    },
+    {
+      "id": "price_004",
+      "marketId": "market_001",
+      "marketName": "Central Market",
+      "product": "beans",
+      "productName": "Beans",
+      "price": 120.00,
+      "unit": "kg",
+      "currency": "KES",
+      "date": "2026-04-01T08:00:00Z",
+      "trend": "down"
+    },
+    {
+      "id": "price_005",
+      "marketId": "market_002",
+      "marketName": "Town Market",
+      "product": "beans",
+      "productName": "Beans",
+      "price": 118.50,
+      "unit": "kg",
+      "currency": "KES",
+      "date": "2026-04-01T09:30:00Z",
+      "trend": "down"
+    },
+    {
+      "id": "price_006",
+      "marketId": "market_003",
+      "marketName": "Farmers Cooperative",
+      "product": "beans",
+      "productName": "Beans",
+      "price": 122.00,
+      "unit": "kg",
+      "currency": "KES",
+      "date": "2026-04-02T10:15:00Z",
+      "trend": "up"
+    },
+    {
+      "id": "price_007",
+      "marketId": "market_001",
+      "marketName": "Central Market",
+      "product": "cassava",
+      "productName": "Cassava",
+      "price": 35.00,
+      "unit": "kg",
+      "currency": "KES",
+      "date": "2026-04-01T08:00:00Z",
+      "trend": "stable"
+    },
+    {
+      "id": "price_008",
+      "marketId": "market_004",
+      "marketName": "Weekly Market",
+      "product": "maize",
+      "productName": "Maize",
+      "price": 43.50,
+      "unit": "kg",
+      "currency": "KES",
+      "date": "2026-03-30T14:00:00Z",
+      "trend": "stable"
+    },
+    {
+      "id": "price_009",
+      "marketId": "market_004",
+      "marketName": "Weekly Market",
+      "product": "beans",
+      "productName": "Beans",
+      "price": 117.00,
+      "unit": "kg",
+      "currency": "KES",
+      "date": "2026-03-30T14:00:00Z",
+      "trend": "down"
+    }
+  ],
+  "price_history": {
+    "maize_market_001": [
+      { "date": "2026-03-01", "price": 42.00 },
+      { "date": "2026-03-08", "price": 43.50 },
+      { "date": "2026-03-15", "price": 44.00 },
+      { "date": "2026-03-22", "price": 44.80 },
+      { "date": "2026-03-29", "price": 45.50 },
+      { "date": "2026-04-01", "price": 45.50 }
+    ],
+    "beans_market_001": [
+      { "date": "2026-03-01", "price": 125.00 },
+      { "date": "2026-03-08", "price": 124.00 },
+      { "date": "2026-03-15", "price": 123.00 },
+      { "date": "2026-03-22", "price": 121.50 },
+      { "date": "2026-03-29", "price": 120.00 },
+      { "date": "2026-04-01", "price": 120.00 }
+    ]
+  }
+}
