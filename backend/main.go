@@ -1,10 +1,13 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
 	"strings" // ← MISSING IMPORT
 	"time"
 )
@@ -413,30 +416,92 @@ func setupHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
+
+
+// Add this handler to debug file serving
+func debugFilesHandler(w http.ResponseWriter, r *http.Request) {
+    enableCORS(&w)
+    
+    files, err := os.ReadDir("../frontend")
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+    
+    w.Header().Set("Content-Type", "text/html")
+    w.WriteHeader(http.StatusOK)
+    
+    html := "<html><body><h1>Files in frontend directory:</h1><ul>"
+    for _, file := range files {
+        info, _ := file.Info()
+        html += "<li>" + file.Name() + " - " + info.ModTime().String() + "</li>"
+    }
+    html += "</ul></body></html>"
+    
+    w.Write([]byte(html))
+}
+
+// Add this to your main() function:
+
+
 func main() {
 	if err := loadData(); err != nil {
 		log.Fatal("Failed to load data:", err)
 	}
 
+	// Create a new ServeMux
+	mux := http.NewServeMux()
+
 	// Serve frontend files
 	fs := http.FileServer(http.Dir("../frontend"))
-	http.Handle("/", fs)
+	mux.Handle("/", fs)
 
 	// API endpoints
-	http.HandleFunc("/api/regions", regionsHandler)
-	http.HandleFunc("/api/crops", cropsHandler)
-	http.HandleFunc("/api/pests", pestsHandler)
-	http.HandleFunc("/api/pests/", pestDetailsHandler)
-	http.HandleFunc("/api/setup", setupHandler)
-	
-	// ← FIX: Add market handlers
-	http.HandleFunc("/api/markets", marketsHandler)
-	http.HandleFunc("/api/prices", pricesHandler)
-	http.HandleFunc("/api/prices/latest", latestPricesHandler)
-	http.HandleFunc("/api/prices/history", priceHistoryHandler)
+	mux.HandleFunc("/api/regions", regionsHandler)
+	mux.HandleFunc("/api/crops", cropsHandler)
+	mux.HandleFunc("/api/pests", pestsHandler)
+	mux.HandleFunc("/api/pests/", pestDetailsHandler)
+	mux.HandleFunc("/api/setup", setupHandler)
+	mux.HandleFunc("/api/markets", marketsHandler)
+	mux.HandleFunc("/api/prices", pricesHandler)
+	mux.HandleFunc("/api/prices/latest", latestPricesHandler)
+	mux.HandleFunc("/api/prices/history", priceHistoryHandler)
+	mux.HandleFunc("/klimat-debug", debugFilesHandler)
 
-	log.Println("🚀 Server starting on http://localhost:8080")
-	log.Println("📱 Open http://localhost:8080/pests.html to test Pest Detective")
-	log.Println("💰 Open http://localhost:8080/markets.html to test Market Prices")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	// Create server
+	server := &http.Server{
+		Addr:    ":8080",  // ← Server listens on 8080
+		Handler: mux,
+	}
+
+	// Channel to listen for interrupt signals
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
+
+	// Start server in a goroutine
+	go func() {
+		log.Println("🚀 Server starting on http://localhost:8080")  // ← FIXED
+		log.Println("📱 Open http://localhost:8080/pests.html")     // ← FIXED
+		log.Println("💰 Open http://localhost:8080/markets.html")   // ← FIXED
+		log.Println("📅 Open http://localhost:8080/calendar.html")  // ← ADDED
+		
+		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("Server failed: %s", err)
+		}
+	}()
+
+	// Wait for interrupt signal
+	<-stop
+	log.Println("\n🛑 Shutting down server...")
+
+	// Create shutdown context with timeout
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	// Attempt graceful shutdown
+	if err := server.Shutdown(ctx); err != nil {
+		log.Fatal("Server forced to shutdown:", err)
+	}
+
+	log.Println("✅ Server stopped")
 }
