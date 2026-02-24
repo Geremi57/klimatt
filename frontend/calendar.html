@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Klimat - Crop Calendar</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <div class="app-header">
+        <h1>📅 My Calendar</h1>
+        <span class="offline-badge" id="offlineBadge">Offline Mode</span>
+    </div>
+    
+    <div class="date-selector">
+        <button id="prevDay">←</button>
+        <h2 id="currentDate">April 3, 2026</h2>
+        <button id="nextDay">→</button>
+    </div>
+    
+    <div id="tasksList" class="tasks-container">
+        <!-- Tasks loaded from IndexedDB -->
+    </div>
+    
+    <nav class="bottom-nav">
+        <a href="calendar.html" class="nav-item active">📅</a>
+        <a href="pests.html" class="nav-item">🐛</a>
+        <a href="markets.html" class="nav-item">💰</a>
+        <a href="farm-diary.html" class="nav-item">📓</a>
+    </nav>
+    
+    <script src="app.js"></script>
+    <script>
+        // Page-specific code
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTodaysTasks(); // Uses IndexedDB only
+        });
+    </script>
+</body>
+</html>
