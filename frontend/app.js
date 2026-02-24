@@ -353,7 +353,19 @@ window.Klimat = {
     showToast,
     
     // Initialize
-    initializeApp
+    initializeApp,
+    // Inside window.Klimat object, add:
+
+// Generate a random ID
+generateId: () => {
+    return Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+},
+
+// Show toast message
+showToast: (message, type = 'info') => {
+    // Simple alert for now
+    alert(message);
+},
 };
 
 // Auto-initialize when script loads
