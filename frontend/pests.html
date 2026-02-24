@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Klimat - Pest Detective</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- For iOS home screen -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Klimat Pest">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <div class="app-header">
+            <div class="header-left">
+                <h1>🐛 Pest Detective</h1>
+            </div>
+            <div class="header-right">
+                <span id="onlineBadge" class="online-badge">🟢 Online</span>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Crop Selection -->
+            <div class="question-section">
+                <h3>1. What crop is affected?</h3>
+                <div class="crop-selector">
+                    <button class="crop-btn" data-crop="maize">
+                        <span class="btn-icon">🌽</span>
+                        <span class="btn-text">Maize</span>
+                    </button>
+                    <button class="crop-btn" data-crop="beans">
+                        <span class="btn-icon">🫘</span>
+                        <span class="btn-text">Beans</span>
+                    </button>
+                    <button class="crop-btn" data-crop="cassava">
+                        <span class="btn-icon">🌱</span>
+                        <span class="btn-text">Cassava</span>
+                    </button>
+                    <button class="crop-btn" data-crop="sorghum">
+                        <span class="btn-icon">🌾</span>
+                        <span class="btn-text">Sorghum</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Symptom Selection -->
+            <div class="question-section">
+                <h3>2. What do you see?</h3>
+                <p class="hint">Select all that apply</p>
+                <div class="symptom-selector">
+                    <button class="symptom-btn" data-symptom="holes">
+                        <span class="btn-icon">🕳️</span>
+                        <span class="btn-text">Holes in leaves</span>
+                    </button>
+                    <button class="symptom-btn" data-symptom="sawdust">
+                        <span class="btn-icon">🪵</span>
+                        <span class="btn-text">Sawdust on stem</span>
+                    </button>
+                    <button class="symptom-btn" data-symptom="caterpillar">
+                        <span class="btn-icon">🐛</span>
+                        <span class="btn-text">Visible caterpillars</span>
+                    </button>
+                    <button class="symptom-btn" data-symptom="sticky">
+                        <span class="btn-icon">🍯</span>
+                        <span class="btn-text">Sticky leaves</span>
+                    </button>
+                    <button class="symptom-btn" data-symptom="wilting">
+                        <span class="btn-icon">🥀</span>
+                        <span class="btn-text">Wilting plant</span>
+                    </button>
+                    <button class="symptom-btn" data-symptom="discolored">
+                        <span class="btn-icon">🎨</span>
+                        <span class="btn-text">Discolored leaves</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Results Section -->
+            <div id="results" class="results-container">
+                <!-- Results will appear here -->
+                <div class="welcome-message">
+                    <p>👆 Select a crop and symptoms to identify pests</p>
+                    <p class="small">All results work offline! Full details available when connected.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <a href="calendar.html" class="nav-item">
+                <span class="nav-icon">📅</span>
+                <span class="nav-label">Calendar</span>
+            </a>
+            <a href="pests.html" class="nav-item active">
+                <span class="nav-icon">🐛</span>
+                <span class="nav-label">Pests</span>
+            </a>
+            <a href="markets.html" class="nav-item">
+                <span class="nav-icon">💰</span>
+                <span class="nav-label">Markets</span>
+            </a>
+            <a href="farm-diary.html" class="nav-item">
+                <span class="nav-icon">📓</span>
+                <span class="nav-label">Diary</span>
+            </a>
+        </nav>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="app.js"></script>
+    <script src="pests.js"></script>
+</body>
+</html>
