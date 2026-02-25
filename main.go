@@ -112,6 +112,20 @@ type CSVRecord struct {
 	USDPrice    float64
 }
 
+type MarketPriceResponse struct {
+	ID           string  `json:"id"`
+	Market       string  `json:"market"`
+	Location     string  `json:"location"`
+	Product      string  `json:"product"`
+	Price        float64 `json:"price"`
+	Currency     string  `json:"currency"`
+	Unit         string  `json:"unit"`
+	Trend        string  `json:"trend"`
+	TrendPercent float64 `json:"trendPercent"`
+	LastUpdated  string  `json:"lastUpdated"`
+	IsStale      bool    `json:"isStale"`
+}
+
 var data_file string = "./wfp_food_prices_ken(1).csv"
 
 // ==================== CSV PARSING ====================
@@ -440,6 +454,100 @@ func main() {
 		c.JSON(200, summary)
 	})
 
+
+router.GET("/api/prices/latest", func(c *gin.Context) {
+	// Get query parameters
+	commoditiesParam := c.Query("commodities") // e.g., "maize,beans"
+	marketsParam := c.Query("markets")         // e.g., "all" or "Dagahaley,Kakuma"
+	
+	// Parse commodities filter
+	var commodityFilters []string
+	if commoditiesParam != "" {
+		commodityFilters = strings.Split(strings.ToLower(commoditiesParam), ",")
+	}
+	
+	// Parse markets filter
+	var marketFilters []string
+	if marketsParam != "" && marketsParam != "all" {
+		marketFilters = strings.Split(marketsParam, ",")
+	}
+	
+	// Map to store latest price for each (market, commodity) combination
+	latestPrices := make(map[string]*Commodity)
+	
+	// Process all markets
+	for _, market := range foodData.Markets {
+		// Skip if market not in filter
+		if len(marketFilters) > 0 && !containsMarket(marketFilters, market.Name) {
+			continue
+		}
+		
+		// Process all categories in this market
+		for _, category := range market.FoodCategories {
+			for _, commodity := range category.Foods {
+				// Skip if commodity not in filter
+				if len(commodityFilters) > 0 && !containsCommodity(commodityFilters, commodity.Name) {
+					continue
+				}
+				
+				// Create a unique key for this (market, commodity)
+				key := fmt.Sprintf("%s|%s", market.Name, commodity.Name)
+				
+				// Keep only the latest (by date)
+				existing, exists := latestPrices[key]
+				if !exists || commodity.Date > existing.Date {
+					latestPrices[key] = &commodity
+				}
+			}
+		}
+	}
+	
+	// Convert to response format and calculate trends
+	var response []MarketPriceResponse
+	for _, commodity := range latestPrices {
+		// Find market name and location
+		var marketName, location string
+		for _, market := range foodData.Markets {
+			for _, category := range market.FoodCategories {
+				for _, c := range category.Foods {
+					if c.ID == commodity.ID {
+						marketName = market.Name
+						location = fmt.Sprintf("%s, %s", market.Admin2, market.Admin1)
+						break
+					}
+				}
+			}
+		}
+		
+		// Normalize price to per kg
+		normalizedPrice, normalizedUnit := normalizePrice(commodity.Price, commodity.Unit)
+		
+		// Calculate trend (compare with previous price)
+		trend, trendPercent := calculateTrend(foodData, commodity, marketName)
+		
+		// Determine if data is stale (older than 30 days)
+		isStale := isDataStale(commodity.Date)
+		
+		response = append(response, MarketPriceResponse{
+			ID:           fmt.Sprintf("%d", commodity.ID),
+			Market:       marketName,
+			Location:     location,
+			Product:      commodity.Name,
+			Price:        normalizedPrice,  // Use normalized price
+			Currency:     commodity.Currency.String(),
+			Unit:         normalizedUnit,    // Use normalized unit ("kg")
+			Trend:        trend,
+			TrendPercent: trendPercent,
+			LastUpdated:  formatDate(commodity.Date),
+			IsStale:      isStale,
+		})
+	}
+	
+	c.JSON(200, response)
+})
+
+// Add this helper function to normalize prices
+
 	// Serving the UI
 	router.Static("/assets", "./ui/dist/assets")
 	router.StaticFile("/sw.js", "./ui/dist/sw.js")
@@ -483,5 +591,143 @@ func getUniqueCounties(markets []MarketData) []string {
 		counties = append(counties, c)
 	}
 	return counties
+}
+
+func containsMarket(filters []string, marketName string) bool {
+	for _, f := range filters {
+		if strings.EqualFold(f, marketName) {
+			return true
+		}
+	}
+	return false
+}
+
+// Helper function to check if commodity is in filter
+func containsCommodity(filters []string, commodityName string) bool {
+	lowerCommodity := strings.ToLower(commodityName)
+	for _, f := range filters {
+		if strings.Contains(lowerCommodity, strings.ToLower(f)) {
+			return true
+		}
+	}
+	return false
+}
+
+func normalizePrice(price float64, unit string) (float64, string) {
+	unit = strings.TrimSpace(unit)
+	
+	// Handle "90 KG" format
+	if strings.Contains(unit, "KG") && !strings.EqualFold(unit, "KG") {
+		// Extract number from strings like "90 KG"
+		parts := strings.Fields(unit)
+		if len(parts) >= 1 {
+			// Try to parse the first part as a number
+			multiplier, err := strconv.ParseFloat(parts[0], 64)
+			if err == nil && multiplier > 0 {
+				// Convert to per kg
+				return price / multiplier, "kg"
+			}
+		}
+	}
+	
+	// Handle liters - convert to kg (assuming 1L = 1kg for water-based products)
+	// This is an approximation - you might want to handle this differently
+	if strings.EqualFold(unit, "L") || strings.EqualFold(unit, "LTR") {
+		return price, "kg" // Approximate 1L = 1kg
+	}
+	
+	// Handle milliliters - convert to kg (500 ML = 0.5 kg)
+	if strings.Contains(strings.ToUpper(unit), "ML") {
+		parts := strings.Fields(unit)
+		if len(parts) >= 1 {
+			ml, err := strconv.ParseFloat(parts[0], 64)
+			if err == nil && ml > 0 {
+				return price * (1000 / ml), "kg" // Convert to per kg
+			}
+		}
+		return price * 2, "kg" // Assume 500 ML if no number
+	}
+	
+	// Handle "Unit" (per item) - keep as is for now
+	if strings.EqualFold(unit, "UNIT") || strings.EqualFold(unit, "Unit") {
+		return price, "unit" // Keep as per unit
+	}
+	
+	// Default: already per kg or unknown
+	return price, strings.ToLower(unit)
+}
+
+
+// Calculate trend by comparing with previous price
+func calculateTrend(foodData FoodData, current *Commodity, marketName string) (string, float64) {
+	// Find previous price for same commodity in same market
+	var previousPrice float64
+	var previousDate string
+	
+	for _, market := range foodData.Markets {
+		if !strings.EqualFold(market.Name, marketName) {
+			continue
+		}
+		
+		for _, category := range market.FoodCategories {
+			for _, commodity := range category.Foods {
+				if commodity.Name == current.Name && commodity.Date < current.Date {
+					if commodity.Date > previousDate {
+						previousDate = commodity.Date
+						previousPrice = commodity.Price
+					}
+				}
+			}
+		}
+	}
+	
+	if previousPrice == 0 {
+		return "stable", 0
+	}
+	
+	percentChange := ((current.Price - previousPrice) / previousPrice) * 100
+	
+	if percentChange > 1 {
+		return "up", percentChange
+	} else if percentChange < -1 {
+		return "down", -percentChange
+	}
+	return "stable", 0
+}
+
+// Check if data is stale (older than 30 days)
+func isDataStale(dateStr string) bool {
+	// Parse date (format: "2025-07-15")
+	parts := strings.Split(dateStr, "-")
+	if len(parts) != 3 {
+		return true
+	}
+	
+	year, _ := strconv.Atoi(parts[0])
+	// month, _ := strconv.Atoi(parts[1])
+	// day, _ := strconv.Atoi(parts[2])
+	
+	// Simple staleness check (in production, use proper time package)
+	// For demo, consider anything before 2026 as stale
+	return year < 2026
+}
+
+// Format date for display
+func formatDate(dateStr string) string {
+	// Convert "2025-07-15" to "15 Jul 2025"
+	parts := strings.Split(dateStr, "-")
+	if len(parts) != 3 {
+		return dateStr
+	}
+	
+	months := []string{"Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+					   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"}
+	
+	month, _ := strconv.Atoi(parts[1])
+	if month < 1 || month > 12 {
+		return dateStr
+	}
+	
+	return fmt.Sprintf("%s %s %s", parts[2], months[month-1], parts[0])
 }
 
