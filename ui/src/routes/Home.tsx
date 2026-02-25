@@ -3,11 +3,8 @@ import PreferredCrops from '@/components/home/PreferredCrops';
 import ProfileDisplay from '@/components/home/ProfileDisplay';
 import MainLayout from '@/components/layout/MainLayout';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { usePreferredCrops } from '@/hooks/usePreferredCrops';
-import { Calendar, Clock, RefreshCw } from 'lucide-react';
 import { useState } from 'react';
 
 export interface FarmerContactInfo {
@@ -17,10 +14,10 @@ export interface FarmerContactInfo {
   location: string;
 }
 
-const defaultDate = new Date(Date.now() - 3600000).toLocaleTimeString();
+// const defaultDate = new Date(Date.now() - 3600000).toLocaleTimeString();
 export function Home() {
-  const [lastSync, setLastSync] = useState(defaultDate);
-  const [isSyncing, setIsSyncing] = useState(false);
+  // const [lastSync, setLastSync] = useState(defaultDate);
+  // const [isSyncing, setIsSyncing] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   const { preferredCrops, addCrop, removeCrop, availableCrops } =
@@ -28,13 +25,13 @@ export function Home() {
   const [profile, setProfile, isProfileLoaded] =
     useLocalStorage<FarmerContactInfo | null>('farmerProfile', null);
 
-  const handleSync = () => {
-    setIsSyncing(true);
-    setTimeout(() => {
-      setLastSync(new Date().toLocaleTimeString());
-      setIsSyncing(false);
-    }, 1500);
-  };
+  // const handleSync = () => {
+  //   setIsSyncing(true);
+  //   setTimeout(() => {
+  //     setLastSync(new Date().toLocaleTimeString());
+  //     setIsSyncing(false);
+  //   }, 1500);
+  // };
 
   const handleSaveProfile = (newProfile: FarmerContactInfo) => {
     setProfile(newProfile);
@@ -79,7 +76,7 @@ export function Home() {
           )}
 
           {/* Sync Status Card */}
-          <Card className="border-primary/20">
+          {/* <Card className="border-primary/20">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base">Sync Status</CardTitle>
@@ -111,113 +108,7 @@ export function Home() {
                 </p>
               </div>
             </CardContent>
-          </Card>
-
-          {/* Harvest Reminders */}
-          <div>
-            <h2 className="text-lg font-semibold mb-3">Harvest Reminders</h2>
-
-            {/* Upcoming Harvest - Wheat */}
-            <Card className="mb-3 border-accent/20">
-              <CardHeader className="pb-2">
-                <div className="flex items-start gap-3">
-                  <div className="bg-accent/20 p-2 rounded-lg mt-1">
-                    <Calendar className="w-5 h-5 text-accent" />
-                  </div>
-                  <div className="flex-1">
-                    <CardTitle className="text-base">
-                      Wheat - Ready to Harvest
-                    </CardTitle>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      12 days remaining
-                    </p>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="w-full bg-muted rounded-full h-2">
-                  <div
-                    className="bg-accent h-2 rounded-full"
-                    style={{ width: '75%' }}
-                  ></div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Upcoming Harvest - Beans */}
-            <Card className="mb-3 border-primary/20">
-              <CardHeader className="pb-2">
-                <div className="flex items-start gap-3">
-                  <div className="bg-primary/20 p-2 rounded-lg mt-1">
-                    <Calendar className="w-5 h-5 text-primary" />
-                  </div>
-                  <div className="flex-1">
-                    <CardTitle className="text-base">
-                      Beans - Almost Ready
-                    </CardTitle>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      5 days remaining
-                    </p>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="w-full bg-muted rounded-full h-2">
-                  <div
-                    className="bg-primary h-2 rounded-full"
-                    style={{ width: '90%' }}
-                  ></div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Upcoming Harvest - Maize */}
-            <Card>
-              <CardHeader className="pb-2">
-                <div className="flex items-start gap-3">
-                  <div className="bg-secondary/20 p-2 rounded-lg mt-1">
-                    <Calendar className="w-5 h-5 text-secondary-foreground" />
-                  </div>
-                  <div className="flex-1">
-                    <CardTitle className="text-base">
-                      Maize - Approaching Maturity
-                    </CardTitle>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      25 days remaining
-                    </p>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="w-full bg-muted rounded-full h-2">
-                  <div
-                    className="bg-secondary h-2 rounded-full"
-                    style={{ width: '40%' }}
-                  ></div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Quick Stats */}
-          <div className="grid grid-cols-2 gap-3 mt-6">
-            <Card>
-              <CardContent className="pt-4">
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-primary">3</p>
-                  <p className="text-xs text-muted-foreground">Active Crops</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="pt-4">
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-accent">8</p>
-                  <p className="text-xs text-muted-foreground">Pest Records</p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          </Card> */}
         </div>
 
         {/* Edit Profile Modal */}
