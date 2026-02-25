@@ -1,168 +1,20 @@
 'use client';
 
+import { useState, useMemo, useEffect } from 'react';
 import MainLayout from '@/components/layout/MainLayout';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Calendar, Plus, X, ChevronLeft, ChevronRight, Sprout, Droplets, Scissors, Package, AlertCircle, CheckCircle2, Clock } from 'lucide-react';
-import { useState, useMemo } from 'react';
+import { Calendar, Plus, X, ChevronLeft, ChevronRight, Sprout, Droplets, Scissors, Package, AlertCircle, CheckCircle2, Clock, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-const calendarEvents = [
-  // ============ MAIZE EVENTS ============
-  {
-    id: 1,
-    date: '2025-01-15',
-    crop: 'Maize',
-    event: 'Begin Land Preparation (Long Rains)',
-    type: 'preparation',
-    details: 'Clear land, plough 2-3 weeks before planting. Remove weeds and crop residue.',
-    completed: false,
-    priority: 'high',
-    season: 'long-rains'
-  },
-  {
-    id: 2,
-    date: '2025-03-25',
-    crop: 'Maize',
-    event: 'Planting Season Begins (Long Rains)',
-    type: 'planting',
-    details: 'Plant within 2 weeks after onset of rains. 75cm between rows, 25-30cm between plants. Apply DAP fertilizer at 50kg/acre.',
-    completed: false,
-    priority: 'critical',
-    season: 'long-rains'
-  },
-  {
-    id: 3,
-    date: '2025-04-15',
-    crop: 'Maize',
-    event: 'First Weeding & Pest Scouting',
-    type: 'maintenance',
-    details: 'First weeding 2-3 weeks after germination. Scout for Fall Armyworm and Stem Borers.',
-    completed: false,
-    priority: 'high',
-    season: 'long-rains'
-  },
-  {
-    id: 4,
-    date: '2025-05-10',
-    crop: 'Maize',
-    event: 'Top Dressing & Second Weeding',
-    type: 'maintenance',
-    details: 'Apply CAN fertilizer at 92kg/acre when maize is knee-high. Second weeding before tasseling.',
-    completed: false,
-    priority: 'high',
-    season: 'long-rains'
-  },
-  {
-    id: 5,
-    date: '2025-08-15',
-    crop: 'Maize',
-    event: 'Harvest Ready',
-    type: 'harvest',
-    details: 'Harvest when husks are dry and grains are hard. Dry to below 13% moisture before storage.',
-    completed: false,
-    priority: 'critical',
-    season: 'long-rains'
-  },
-  
-  // ============ BEANS EVENTS ============
-  {
-    id: 6,
-    date: '2025-03-15',
-    crop: 'Beans',
-    event: 'Land Preparation',
-    type: 'preparation',
-    details: 'Prepare seedbeds for planting. Incorporate manure if available.',
-    completed: false,
-    priority: 'medium',
-    season: 'long-rains'
-  },
-  {
-    id: 7,
-    date: '2025-04-01',
-    crop: 'Beans',
-    event: 'Planting Window Opens',
-    type: 'planting',
-    details: 'Plant with onset of rains. 50cm between rows, 15cm between plants. Plant 2 seeds per hole.',
-    completed: false,
-    priority: 'high',
-    season: 'long-rains'
-  },
-  {
-    id: 8,
-    date: '2025-04-25',
-    crop: 'Beans',
-    event: 'First Weeding',
-    type: 'maintenance',
-    details: 'Remove weeds carefully. Watch for aphids and bean fly.',
-    completed: false,
-    priority: 'medium',
-    season: 'long-rains'
-  },
-  {
-    id: 9,
-    date: '2025-07-01',
-    crop: 'Beans',
-    event: 'Harvest Period',
-    type: 'harvest',
-    details: 'Harvest when pods are dry and rattle. Dry thoroughly before shelling.',
-    completed: false,
-    priority: 'high',
-    season: 'long-rains'
-  },
-  
-  // ============ WHEAT EVENTS ============
-  {
-    id: 10,
-    date: '2025-03-01',
-    crop: 'Wheat',
-    event: 'Early Land Prep (Duma/Ngamia Varieties)',
-    type: 'preparation',
-    details: 'Prepare land for early planting. Use certified disease-free seed.',
-    completed: false,
-    priority: 'medium',
-    season: 'long-rains'
-  },
-  {
-    id: 11,
-    date: '2025-03-20',
-    crop: 'Wheat',
-    event: 'Planting at Onset of Rains',
-    type: 'planting',
-    details: 'Plant with planter (1 bag/acre) or broadcast (1.5 bags/acre). Apply 50kg DAP/acre.',
-    completed: false,
-    priority: 'high',
-    season: 'long-rains'
-  },
-  {
-    id: 12,
-    date: '2025-04-25',
-    crop: 'Wheat',
-    event: 'Herbicide Application',
-    type: 'maintenance',
-    details: 'Apply Buctril MC when crop has 4-6 leaves. Watch for Russian wheat aphid.',
-    completed: false,
-    priority: 'medium',
-    season: 'long-rains'
-  },
-  {
-    id: 13,
-    date: '2025-07-15',
-    crop: 'Wheat',
-    event: 'Harvest Ready (Duma/Ngamia)',
-    type: 'harvest',
-    details: 'Early maturing varieties ready for harvest. Duma yields up to 9 bags per acre.',
-    completed: false,
-    priority: 'high',
-    season: 'long-rains'
-  }
-];
+import { defaultCalendarEvents, calendarHelpers } from '@/services/calendarService';
+// At the top of your calendar.ts, replace the IndexedDB import section with:
+// At the top of your calendar.ts:
+import { useIndexedDB, type CalendarEvent } from '@/hooks/useIndexedDB';
 
 type EventType = 'planting' | 'maintenance' | 'harvest' | 'preparation';
 type Priority = 'critical' | 'high' | 'medium' | 'low';
-type Season = 'long-rains' | 'short-rains' | 'dry';
 
 const getEventIcon = (type: EventType) => {
   switch (type) {
@@ -216,13 +68,33 @@ const months = [
 ];
 
 export function CalendarPage() {
+  const {
+    isReady,
+    error: dbError,
+    getEventsByMonth,
+    addEvent,
+    updateEvent,
+    deleteEvent,
+    seedInitialData,
+  } = useIndexedDB();
+
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [expandedEvent, setExpandedEvent] = useState<number | null>(null);
-  const [events, setEvents] = useState(calendarEvents);
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
+  const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filterCrop, setFilterCrop] = useState<string>('all');
   const [filterType, setFilterType] = useState<EventType | 'all'>('all');
+  const [stats, setStats] = useState({
+    total: 0,
+    completed: 0,
+    pending: 0,
+    overdue: 0,
+    upcoming: 0,
+    completionRate: 0,
+  });
+  
   const [formData, setFormData] = useState({
     date: '',
     crop: '',
@@ -231,6 +103,46 @@ export function CalendarPage() {
     priority: 'medium' as Priority,
     details: '',
   });
+
+  // Load events from IndexedDB
+  useEffect(() => {
+    const loadEvents = async () => {
+      if (!isReady) return;
+      
+      setLoading(true);
+      try {
+        // Seed initial data if needed
+        await seedInitialData(defaultCalendarEvents);
+        
+        // Get events for current month
+        const monthEvents = await getEventsByMonth(currentYear, currentMonth);
+        setEvents(monthEvents);
+        
+        // Update stats
+        const allEvents = await getEventsByMonth(currentYear, currentMonth);
+        setStats(calendarHelpers.getStats(allEvents));
+      } catch (error) {
+        console.error('Failed to load events:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadEvents();
+  }, [isReady, currentMonth, currentYear, getEventsByMonth, seedInitialData]);
+
+  // Refresh events when month changes
+  useEffect(() => {
+    const refreshEvents = async () => {
+      if (!isReady) return;
+      
+      const monthEvents = await getEventsByMonth(currentYear, currentMonth);
+      setEvents(monthEvents);
+      setStats(calendarHelpers.getStats(monthEvents));
+    };
+
+    refreshEvents();
+  }, [currentMonth, currentYear, getEventsByMonth, isReady]);
 
   // Get unique crops for filter
   const uniqueCrops = useMemo(() => {
@@ -241,28 +153,22 @@ export function CalendarPage() {
   // Filter events based on selected filters
   const filteredEvents = useMemo(() => {
     return events.filter(event => {
-      const eventMonth = new Date(event.date).getMonth();
-      const eventYear = new Date(event.date).getFullYear();
-      const monthMatch = eventMonth === currentMonth && eventYear === currentYear;
       const cropMatch = filterCrop === 'all' || event.crop === filterCrop;
       const typeMatch = filterType === 'all' || event.type === filterType;
-      return monthMatch && cropMatch && typeMatch;
+      return cropMatch && typeMatch;
     });
-  }, [events, currentMonth, currentYear, filterCrop, filterType]);
+  }, [events, filterCrop, filterType]);
 
   // Group events by week
   const weeks = useMemo(() => {
-    const firstDay = new Date(currentYear, currentMonth, 1);
-    const lastDay = new Date(currentYear, currentMonth + 1, 0);
-    const daysInMonth = lastDay.getDate();
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
     
     const weeks: (typeof events)[] = [];
     let week: typeof events = [];
     
     for (let day = 1; day <= daysInMonth; day++) {
-      const dayEvents = filteredEvents.filter(e => 
-        new Date(e.date).getDate() === day
-      );
+      const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      const dayEvents = filteredEvents.filter(e => e.date === dateStr);
       
       if (dayEvents.length > 0) {
         week.push(...dayEvents);
@@ -278,40 +184,87 @@ export function CalendarPage() {
     }
     
     return weeks;
-  }, [filteredEvents, currentMonth, currentYear]);
+  }, [filteredEvents, currentYear, currentMonth]);
 
-  const handleAddEvent = () => {
+  const handleAddEvent = async () => {
     if (formData.date && formData.crop && formData.event) {
-      const newEvent = {
-        id: Math.max(...events.map((e) => e.id), 0) + 1,
-        date: formData.date,
-        crop: formData.crop,
-        event: formData.event,
-        type: formData.type,
-        details: formData.details,
-        completed: false,
-        priority: formData.priority,
-        season: new Date(formData.date).getMonth() < 6 ? 'long-rains' : 'short-rains',
-      };
-      setEvents([...events, newEvent]);
-      setFormData({
-        date: '',
-        crop: '',
-        event: '',
-        type: 'maintenance',
-        priority: 'medium',
-        details: '',
-      });
-      setIsModalOpen(false);
+      try {
+        const newId = await addEvent({
+          date: formData.date,
+          crop: formData.crop,
+          event: formData.event,
+          type: formData.type,
+          details: formData.details,
+          completed: false,
+          priority: formData.priority,
+          season: new Date(formData.date).getMonth() < 6 ? 'long-rains' : 'short-rains',
+        });
+
+        console.log('✅ Event added with ID:', newId);
+        
+        // Refresh events
+        const updatedEvents = await getEventsByMonth(currentYear, currentMonth);
+        setEvents(updatedEvents);
+        
+        // Reset form
+        setFormData({
+          date: '',
+          crop: '',
+          event: '',
+          type: 'maintenance',
+          priority: 'medium',
+          details: '',
+        });
+        
+        setIsModalOpen(false);
+      } catch (error) {
+        console.error('Failed to add event:', error);
+        alert('Failed to add event. Please try again.');
+      }
     }
   };
 
-  const toggleEventComplete = (eventId: number) => {
-    setEvents(events.map(event => 
-      event.id === eventId 
-        ? { ...event, completed: !event.completed }
-        : event
-    ));
+  const toggleEventComplete = async (eventId: number) => {
+    try {
+      const event = events.find(e => e.id === eventId);
+      if (!event) return;
+
+      await updateEvent(eventId, { completed: !event.completed });
+      
+      // Update local state
+      setEvents(prev => prev.map(event => 
+        event.id === eventId 
+          ? { ...event, completed: !event.completed }
+          : event
+      ));
+      
+      // Update stats
+      setStats(prev => ({
+        ...prev,
+        completed: prev.completed + (event.completed ? -1 : 1),
+        pending: prev.pending + (event.completed ? 1 : -1),
+      }));
+    } catch (error) {
+      console.error('Failed to update event:', error);
+    }
+  };
+
+  const handleDeleteEvent = async (eventId: number) => {
+    if (confirm('Are you sure you want to delete this event?')) {
+      try {
+        await deleteEvent(eventId);
+        
+        // Refresh events
+        const updatedEvents = await getEventsByMonth(currentYear, currentMonth);
+        setEvents(updatedEvents);
+        
+        if (expandedEvent === eventId) {
+          setExpandedEvent(null);
+        }
+      } catch (error) {
+        console.error('Failed to delete event:', error);
+      }
+    }
   };
 
   const navigateMonth = (direction: 'prev' | 'next') => {
@@ -332,6 +285,38 @@ export function CalendarPage() {
     }
     setExpandedEvent(null);
   };
+
+  if (loading) {
+    return (
+      <MainLayout>
+        <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 flex items-center justify-center">
+          <div className="text-center">
+            <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
+            <p className="text-muted-foreground">Loading your calendar...</p>
+          </div>
+        </div>
+      </MainLayout>
+    );
+  }
+
+  if (dbError) {
+    return (
+      <MainLayout>
+        <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 flex items-center justify-center p-4">
+          <Card className="max-w-md w-full border-destructive">
+            <CardContent className="p-6 text-center">
+              <AlertCircle className="w-12 h-12 text-destructive mx-auto mb-4" />
+              <h2 className="text-lg font-bold mb-2">Database Error</h2>
+              <p className="text-muted-foreground mb-4">{dbError}</p>
+              <Button onClick={() => window.location.reload()}>
+                Retry
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </MainLayout>
+    );
+  }
 
   return (
     <MainLayout>
@@ -421,31 +406,56 @@ export function CalendarPage() {
               <CardContent className="p-3 text-center">
                 <Sprout className="w-5 h-5 mx-auto mb-1 text-green-600" />
                 <p className="text-xs text-muted-foreground">Planting</p>
-                <p className="text-lg font-bold">{filteredEvents.filter(e => e.type === 'planting').length}</p>
+                <p className="text-lg font-bold">{events.filter(e => e.type === 'planting').length}</p>
               </CardContent>
             </Card>
             <Card className="border-0 shadow-sm bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950/30 dark:to-blue-900/20">
               <CardContent className="p-3 text-center">
                 <Scissors className="w-5 h-5 mx-auto mb-1 text-blue-600" />
                 <p className="text-xs text-muted-foreground">Maintenance</p>
-                <p className="text-lg font-bold">{filteredEvents.filter(e => e.type === 'maintenance').length}</p>
+                <p className="text-lg font-bold">{events.filter(e => e.type === 'maintenance').length}</p>
               </CardContent>
             </Card>
             <Card className="border-0 shadow-sm bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/30 dark:to-amber-900/20">
               <CardContent className="p-3 text-center">
                 <Package className="w-5 h-5 mx-auto mb-1 text-amber-600" />
                 <p className="text-xs text-muted-foreground">Harvest</p>
-                <p className="text-lg font-bold">{filteredEvents.filter(e => e.type === 'harvest').length}</p>
+                <p className="text-lg font-bold">{events.filter(e => e.type === 'harvest').length}</p>
               </CardContent>
             </Card>
             <Card className="border-0 shadow-sm bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950/30 dark:to-purple-900/20">
               <CardContent className="p-3 text-center">
                 <Droplets className="w-5 h-5 mx-auto mb-1 text-purple-600" />
                 <p className="text-xs text-muted-foreground">Prep</p>
-                <p className="text-lg font-bold">{filteredEvents.filter(e => e.type === 'preparation').length}</p>
+                <p className="text-lg font-bold">{events.filter(e => e.type === 'preparation').length}</p>
               </CardContent>
             </Card>
           </div>
+
+          {/* Upcoming & Overdue Summary */}
+          {(stats.overdue > 0 || stats.upcoming > 0) && (
+            <Card className="border-0 shadow-sm bg-primary/5">
+              <CardContent className="p-3">
+                <div className="flex justify-between items-center">
+                  {stats.overdue > 0 && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-destructive">⚠️ {stats.overdue} overdue</span>
+                    </div>
+                  )}
+                  {stats.upcoming > 0 && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-primary">📅 {stats.upcoming} upcoming this week</span>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-muted-foreground">
+                      {stats.completionRate.toFixed(0)}% complete
+                    </span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Events by Week */}
           {weeks.length === 0 ? (
@@ -552,21 +562,22 @@ export function CalendarPage() {
                               className="flex-1"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                // Handle edit
+                                // TODO: Implement edit functionality
+                                alert('Edit feature coming soon!');
                               }}
                             >
                               Edit
                             </Button>
                             <Button
                               size="sm"
+                              variant="destructive"
                               className="flex-1"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                // Handle add reminder
+                                handleDeleteEvent(event.id);
                               }}
                             >
-                              <Clock className="w-3 h-3 mr-2" />
-                              Remind
+                              Delete
                             </Button>
                           </div>
                         </div>
