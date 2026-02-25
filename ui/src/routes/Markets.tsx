@@ -1,12 +1,10 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect } from 'react'; // Add useEffect
+import { useState, useEffect } from 'react';
 import MainLayout from '@/components/layout/MainLayout';
 import MarketCard from '@/components/markets/MarketCard';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BarChart3, Filter, RefreshCw } from 'lucide-react'; // Add RefreshCw
+import { BarChart3, Filter, RefreshCw, TrendingUp, TrendingDown } from 'lucide-react';
 import {
   CartesianGrid,
   Line,
@@ -16,8 +14,6 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { usePreferredCrops } from '@/hooks/usePreferredCrops';
-import { API_BASE_URL } from '@/constants/Domain';
 
 // ==================== TYPES ====================
 
@@ -25,7 +21,7 @@ interface MarketPrice {
   id: string;
   market: string;
   location: string;
-  name: string;
+  product: string;
   price: number;
   currency: string;
   unit: string;
@@ -35,6 +31,20 @@ interface MarketPrice {
   isStale: boolean;
 }
 
+interface PriceHistoryPoint {
+  date: string;
+  price: number;
+}
+
+interface SelectedMarketData {
+  id: string;
+  market: string;
+  product: string;
+  price: number;
+  currency: string;
+  unit: string;
+}
+
 // ==================== COMPONENT ====================
 
 export default function MarketsPage() {
@@ -42,42 +52,36 @@ export default function MarketsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastFetched, setLastFetched] = useState<Date | null>(null);
-
+  
   // Filter states
-  const [selectedMarket, setSelectedMarket] = useState<string | null>(null);
-  const { preferredCrops, availableCrops } = usePreferredCrops();
-  const [selectedProducts, setSelectedProducts] =
-    useState<string[]>(preferredCrops);
-  const [products] = useState<string[]>(['All Products', ...availableCrops]);
+  const [selectedProduct, setSelectedProduct] = useState('All Products');
+  const [selectedMarket, setSelectedMarket] = useState<SelectedMarketData | null>(null);
+  const [priceHistory, setPriceHistory] = useState<PriceHistoryPoint[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
 
-  // Mock chart data (keep this for now, you can replace with real history later)
-  const priceHistory = [
-    { date: 'Mon', price: 43.0 },
-    { date: 'Tue', price: 43.5 },
-    { date: 'Wed', price: 44.0 },
-    { date: 'Thu', price: 44.5 },
-    { date: 'Fri', price: 45.0 },
-    { date: 'Sat', price: 45.5 },
-    { date: 'Sun', price: 45.5 },
-  ];
+  // Get unique products from API data for filter
+  const getUniqueProducts = (): string[] => {
+    const products = prices.map(p => p.product);
+    return ['All Products', ...new Set(products)].sort();
+  };
 
   // Fetch data from API
   const fetchPrices = async () => {
     console.log('📡 Fetching market prices...');
     setLoading(true);
     setError(null);
-
+    
     try {
+      const farmerCommodities = ['maize', 'beans'];
+      
       const response = await fetch(
-        `${API_BASE_URL}/api/prices/latest?commodities=${selectedProducts.join(',')}&markets=all`,
+        `http://localhost:8080/api/prices/latest?commodities=${farmerCommodities.join(',')}&markets=all`
       );
-
-      console.log('📥 Response status:', response.status);
-
+      
       if (!response.ok) {
         throw new Error(`Failed to fetch: ${response.status}`);
       }
-
+      
       const data = await response.json();
       console.log('✅ Data received:', data);
       setPrices(data);
@@ -85,15 +89,14 @@ export default function MarketsPage() {
     } catch (err) {
       console.error('❌ Error fetching prices:', err);
       setError(err instanceof Error ? err.message : 'Failed to load prices');
-
-      // For development, fallback to mock data if API fails
-      console.log('⚠️ Using mock data as fallback');
+      
+      // Fallback mock data
       setPrices([
         {
           id: 'market-1',
           market: 'Central Market',
           location: 'Nairobi',
-          name: 'Maize',
+          product: 'Maize',
           price: 45.5,
           currency: 'KES',
           unit: 'kg',
@@ -102,62 +105,51 @@ export default function MarketsPage() {
           lastUpdated: '2 hours ago',
           isStale: false,
         },
-        {
-          id: 'market-2',
-          market: 'Eastleigh Market',
-          location: 'Nairobi',
-          name: 'Maize',
-          price: 44.0,
-          currency: 'KES',
-          unit: 'kg',
-          trend: 'stable',
-          trendPercent: 0,
-          lastUpdated: '3 hours ago',
-          isStale: false,
-        },
-        {
-          id: 'market-3',
-          market: 'Regional Market',
-          location: 'Kisii',
-          name: 'Maize',
-          price: 42.0,
-          currency: 'KES',
-          unit: 'kg',
-          trend: 'down',
-          trendPercent: -2,
-          lastUpdated: '5 hours ago',
-          isStale: false,
-        },
-        {
-          id: 'market-4',
-          market: 'Farmer Cooperative',
-          location: 'Eldoret',
-          name: 'Wheat',
-          price: 52.0,
-          currency: 'KES',
-          unit: 'kg',
-          trend: 'up',
-          trendPercent: 3,
-          lastUpdated: '4 hours ago',
-          isStale: false,
-        },
-        {
-          id: 'market-5',
-          market: 'Border Market',
-          location: 'Malaba',
-          name: 'Beans',
-          price: 85.0,
-          currency: 'KES',
-          unit: 'kg',
-          trend: 'down',
-          trendPercent: -4,
-          lastUpdated: 'Yesterday',
-          isStale: true,
-        },
+        // ... other mock data
       ]);
     } finally {
       setLoading(false);
     }
+  };
+
+  // Fetch price history for selected market
+  const fetchPriceHistory = async (marketName: string, productName: string) => {
+    setHistoryLoading(true);
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/prices/history?market=${encodeURIComponent(marketName)}&commodity=${encodeURIComponent(productName)}`
+      );
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch history');
+      }
+      
+      const data = await response.json();
+      console.log('📊 Price history:', data);
+      setPriceHistory(data);
+    } catch (err) {
+      console.error('Error fetching history:', err);
+      // Generate mock history as fallback
+      generateMockHistory();
+    } finally {
+      setHistoryLoading(false);
+    }
+  };
+
+  // Generate mock history for demo if API fails
+  const generateMockHistory = () => {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const currentMonth = new Date().getMonth();
+    const mockHistory = [];
+    
+    for (let i = 5; i >= 0; i--) {
+      const monthIndex = (currentMonth - i + 12) % 12;
+      mockHistory.push({
+        date: months[monthIndex],
+        price: 40 + Math.random() * 10
+      });
+    }
+    setPriceHistory(mockHistory);
   };
 
   // Load on mount
@@ -165,22 +157,47 @@ export default function MarketsPage() {
     fetchPrices();
   }, []);
 
-  // Filter prices based on selected product
-  const filteredPrices = selectedProducts.includes('All Products')
-    ? prices
-    : prices.filter((p) => {
-        // This is a simple filter - you might want to adjust based on your data structure
-        const pI = selectedProducts.findIndex(
-          (pr) => pr.toLowerCase() === p.name?.toLowerCase(),
-        );
-        const productName = pI >= 0 ? p.name?.toLowerCase() : '';
-        return (
-          p.market.toLowerCase().includes(productName) ||
-          p.location.toLowerCase().includes(productName)
-        );
+  // Handle view history
+  const handleViewHistory = (marketId: string) => {
+    const marketData = prices.find(p => p.id === marketId);
+    if (marketData) {
+      setSelectedMarket({
+        id: marketData.id,
+        market: marketData.market,
+        product: marketData.product,
+        price: marketData.price,
+        currency: marketData.currency,
+        unit: marketData.unit
       });
+      fetchPriceHistory(marketData.market, marketData.product);
+    }
+  };
 
-  // const products = getUniqueProducts();
+  // Filter prices based on selected product
+  const filteredPrices = selectedProduct === 'All Products'
+    ? prices
+    : prices.filter(p => p.product === selectedProduct);
+
+  const products = getUniqueProducts();
+
+  // Calculate statistics from price history
+  const getStats = () => {
+    if (priceHistory.length === 0) {
+      return { min: 0, max: 0, avg: 0, change: 0, changePercent: 0 };
+    }
+    
+    const prices = priceHistory.map(h => h.price);
+    const min = Math.min(...prices);
+    const max = Math.max(...prices);
+    const avg = prices.reduce((a, b) => a + b, 0) / prices.length;
+    
+    const firstPrice = priceHistory[0]?.price || 0;
+    const lastPrice = priceHistory[priceHistory.length - 1]?.price || 0;
+    const change = lastPrice - firstPrice;
+    const changePercent = firstPrice > 0 ? (change / firstPrice) * 100 : 0;
+    
+    return { min, max, avg, change, changePercent };
+  };
 
   // Loading state
   if (loading) {
@@ -198,11 +215,8 @@ export default function MarketsPage() {
           </div>
           <div className="px-4 py-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div
-                  key={i}
-                  className="h-64 bg-muted animate-pulse rounded-lg"
-                />
+              {[1, 2, 3, 4, 5, 6].map(i => (
+                <div key={i} className="h-64 bg-muted animate-pulse rounded-lg" />
               ))}
             </div>
           </div>
@@ -258,7 +272,7 @@ export default function MarketsPage() {
 
         {/* Content */}
         <div className="px-4 py-6 space-y-4">
-          {/* Product Filter - Only show if we have products */}
+          {/* Product Filter */}
           {products.length > 1 && (
             <Card>
               <CardHeader className="pb-3">
@@ -269,29 +283,12 @@ export default function MarketsPage() {
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
-                  {products.map((product, i) => (
+                  {products.map((product) => (
                     <Button
-                      key={`${product}-${i}`}
-                      variant={
-                        selectedProducts.findIndex(
-                          (p) => p.toLowerCase() == product.toLowerCase(),
-                        ) >= 0
-                          ? 'default'
-                          : 'outline'
-                      }
+                      key={product}
+                      variant={selectedProduct === product ? 'default' : 'outline'}
                       size="sm"
-                      onClick={() =>
-                        setSelectedProducts((prevSt) => {
-                          const pI = prevSt.findIndex(
-                            (p) => p.toLowerCase() === product.toLowerCase(),
-                          );
-                          if (pI >= 0)
-                            return prevSt.filter(
-                              (p) => p.toLowerCase() !== product.toLowerCase(),
-                            );
-                          else return [...prevSt, product];
-                        })
-                      }
+                      onClick={() => setSelectedProduct(product)}
                       className="text-xs"
                     >
                       {product}
@@ -322,7 +319,7 @@ export default function MarketsPage() {
                 <MarketCard
                   key={market.id}
                   market={market}
-                  onViewHistory={() => setSelectedMarket(market.id)}
+                  onViewHistory={() => handleViewHistory(market.id)}
                 />
               ))
             ) : (
@@ -337,64 +334,133 @@ export default function MarketsPage() {
             <div className="fixed inset-0 bg-black/50 flex items-end z-50">
               <div className="bg-card w-full rounded-t-2xl p-6 space-y-4 max-h-[80vh] overflow-y-auto">
                 <div className="flex items-center justify-between">
-                  <h3 className="font-semibold">Price Trend</h3>
+                  <div>
+                    <h3 className="font-semibold">{selectedMarket.product} Price History</h3>
+                    <p className="text-sm text-muted-foreground">{selectedMarket.market}</p>
+                  </div>
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => setSelectedMarket(null)}
+                    onClick={() => {
+                      setSelectedMarket(null);
+                      setPriceHistory([]);
+                    }}
                   >
                     ✕
                   </Button>
                 </div>
 
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={priceHistory}>
-                      <CartesianGrid
-                        strokeDasharray="3 3"
-                        stroke="var(--color-border)"
-                      />
-                      <XAxis
-                        dataKey="date"
-                        stroke="var(--color-muted-foreground)"
-                      />
-                      <YAxis stroke="var(--color-muted-foreground)" />
-                      <Tooltip
-                        contentStyle={{
-                          backgroundColor: 'var(--color-card)',
-                          border: '1px solid var(--color-border)',
-                        }}
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="price"
-                        stroke="var(--color-primary)"
-                        dot={{ fill: 'var(--color-primary)' }}
-                        strokeWidth={2}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
+                {/* Current Price Summary */}
+                <div className="bg-primary/10 p-4 rounded-lg">
+                  <p className="text-sm text-muted-foreground">Current Price</p>
+                  <p className="text-3xl font-bold text-primary">
+                    {selectedMarket.currency} {selectedMarket.price.toFixed(2)}
+                    <span className="text-sm font-normal text-muted-foreground ml-2">
+                      per {selectedMarket.unit}
+                    </span>
+                  </p>
                 </div>
 
-                <div className="grid grid-cols-3 gap-3">
-                  <div className="text-center p-3 bg-muted/50 rounded-lg">
-                    <p className="text-xs text-muted-foreground">Min</p>
-                    <p className="font-semibold">43.0</p>
+                {/* Price Chart */}
+                {historyLoading ? (
+                  <div className="h-64 flex items-center justify-center">
+                    <RefreshCw className="w-8 h-8 animate-spin text-muted-foreground" />
                   </div>
-                  <div className="text-center p-3 bg-muted/50 rounded-lg">
-                    <p className="text-xs text-muted-foreground">Avg</p>
-                    <p className="font-semibold">44.4</p>
+                ) : priceHistory.length > 0 ? (
+                  <>
+                    <div className="h-64">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={priceHistory}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
+                          <XAxis 
+                            dataKey="date" 
+                            stroke="var(--color-muted-foreground)"
+                            tick={{ fontSize: 12 }}
+                          />
+                          <YAxis 
+                            stroke="var(--color-muted-foreground)"
+                            tick={{ fontSize: 12 }}
+                            tickFormatter={(value) => `${selectedMarket.currency} ${value}`}
+                          />
+                          <Tooltip
+                            contentStyle={{
+                              backgroundColor: 'var(--color-card)',
+                              border: '1px solid var(--color-border)',
+                              borderRadius: '8px'
+                            }}
+                            formatter={(value: number) => [
+                              `${selectedMarket.currency} ${value.toFixed(2)}`,
+                              'Price'
+                            ]}
+                          />
+                          <Line
+                            type="monotone"
+                            dataKey="price"
+                            stroke="var(--color-primary)"
+                            dot={{ fill: 'var(--color-primary)', r: 4 }}
+                            activeDot={{ r: 6 }}
+                            strokeWidth={2}
+                          />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
+
+                    {/* Statistics */}
+                    {(() => {
+                      const stats = getStats();
+                      return (
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="bg-muted/50 p-3 rounded-lg">
+                            <p className="text-xs text-muted-foreground">Average (6 months)</p>
+                            <p className="text-lg font-semibold">
+                              {selectedMarket.currency} {stats.avg.toFixed(2)}
+                            </p>
+                          </div>
+                          <div className="bg-muted/50 p-3 rounded-lg">
+                            <p className="text-xs text-muted-foreground">Price Range</p>
+                            <p className="text-lg font-semibold">
+                              {selectedMarket.currency} {stats.min.toFixed(2)} - {stats.max.toFixed(2)}
+                            </p>
+                          </div>
+                          <div className="bg-muted/50 p-3 rounded-lg col-span-2">
+                            <p className="text-xs text-muted-foreground">6-Month Trend</p>
+                            <div className="flex items-center gap-2">
+                              {stats.change > 0 ? (
+                                <>
+                                  <TrendingUp className="w-4 h-4 text-accent" />
+                                  <span className="text-accent font-semibold">
+                                    +{stats.changePercent.toFixed(1)}% (↑ {selectedMarket.currency} {stats.change.toFixed(2)})
+                                  </span>
+                                </>
+                              ) : stats.change < 0 ? (
+                                <>
+                                  <TrendingDown className="w-4 h-4 text-destructive" />
+                                  <span className="text-destructive font-semibold">
+                                    {stats.changePercent.toFixed(1)}% (↓ {selectedMarket.currency} {Math.abs(stats.change).toFixed(2)})
+                                  </span>
+                                </>
+                              ) : (
+                                <span className="text-muted-foreground">Stable</span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })()}
+                  </>
+                ) : (
+                  <div className="h-64 flex items-center justify-center text-muted-foreground">
+                    No historical data available
                   </div>
-                  <div className="text-center p-3 bg-muted/50 rounded-lg">
-                    <p className="text-xs text-muted-foreground">Max</p>
-                    <p className="font-semibold">45.5</p>
-                  </div>
-                </div>
+                )}
 
                 <Button
                   variant="outline"
                   className="w-full"
-                  onClick={() => setSelectedMarket(null)}
+                  onClick={() => {
+                    setSelectedMarket(null);
+                    setPriceHistory([]);
+                  }}
                 >
                   Close
                 </Button>
