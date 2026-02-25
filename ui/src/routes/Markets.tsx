@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react'; // Add useEffect
 import MainLayout from '@/components/layout/MainLayout';
 import MarketCard from '@/components/markets/MarketCard';
@@ -15,6 +16,7 @@ import {
   YAxis,
 } from 'recharts';
 import { usePreferredCrops } from '@/hooks/usePreferredCrops';
+import { API_BASE_URL } from '@/constants/Domain';
 
 // ==================== TYPES ====================
 
@@ -45,7 +47,7 @@ export default function MarketsPage() {
   const { preferredCrops, availableCrops } = usePreferredCrops();
   const [selectedProducts, setSelectedProducts] =
     useState<string[]>(preferredCrops);
-  const [products] = useState<string[]>(availableCrops);
+  const [products] = useState<string[]>(['All Products', ...availableCrops]);
 
   // // Get unique products from API data for filter
   // const getUniqueProducts = () => {
@@ -78,11 +80,8 @@ export default function MarketsPage() {
     setError(null);
 
     try {
-      // The farmer's crops - customize this based on user preferences
-      const farmerCommodities = ['maize', 'beans'];
-
       const response = await fetch(
-        `http://localhost:8080/api/prices/latest?commodities=${farmerCommodities.join(',')}&markets=all`,
+        `${API_BASE_URL}/api/prices/latest?commodities=${products.join(',')}&markets=all`,
       );
 
       console.log('📥 Response status:', response.status);
