@@ -24,7 +24,6 @@ const AVAILABLE_CROPS = [
 export function usePreferredCrops() {
   const [preferredCrops, setPreferredCrops] = useState<string[]>([
     'Maize',
-    'Wheat',
     'Beans',
   ]);
 
