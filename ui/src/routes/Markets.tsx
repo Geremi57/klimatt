@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react'; // Add useEffect
 import MainLayout from '@/components/layout/MainLayout';
@@ -49,19 +50,6 @@ export default function MarketsPage() {
     useState<string[]>(preferredCrops);
   const [products] = useState<string[]>(['All Products', ...availableCrops]);
 
-  // // Get unique products from API data for filter
-  // const getUniqueProducts = () => {
-  //   const products = prices.map((p) => {
-  //     // Extract product name from market or location (you might need to adjust this)
-  //     // For now, we'll use a placeholder logic
-  //     if (p.market.includes('Maize')) return 'Maize';
-  //     if (p.market.includes('Beans')) return 'Beans';
-  //     if (p.market.includes('Wheat')) return 'Wheat';
-  //     return 'Other';
-  //   });
-  //   return ['All Products', ...new Set(products)];
-  // };
-
   // Mock chart data (keep this for now, you can replace with real history later)
   const priceHistory = [
     { date: 'Mon', price: 43.0 },
@@ -81,7 +69,7 @@ export default function MarketsPage() {
 
     try {
       const response = await fetch(
-        `${API_BASE_URL}/api/prices/latest?commodities=${products.join(',')}&markets=all`,
+        `${API_BASE_URL}/api/prices/latest?commodities=${selectedProducts.join(',')}&markets=all`,
       );
 
       console.log('📥 Response status:', response.status);
@@ -172,16 +160,6 @@ export default function MarketsPage() {
     }
   };
 
-  // const extractProductFromMarket = (market: string): string => {
-  //   const marketLower = market.toLowerCase();
-  //   if (marketLower.includes('maize')) return 'Maize';
-  //   if (marketLower.includes('bean')) return 'Beans';
-  //   if (marketLower.includes('wheat')) return 'Wheat';
-  //   if (marketLower.includes('cassava')) return 'Cassava';
-  //   if (marketLower.includes('sorghum')) return 'Sorghum';
-  //   return 'Other';
-  // };
-
   // Load on mount
   useEffect(() => {
     fetchPrices();
@@ -193,9 +171,9 @@ export default function MarketsPage() {
     : prices.filter((p) => {
         // This is a simple filter - you might want to adjust based on your data structure
         const pI = selectedProducts.findIndex(
-          (pr) => pr.toLowerCase() === p.name.toLowerCase(),
+          (pr) => pr.toLowerCase() === p.name?.toLowerCase(),
         );
-        const productName = pI >= 0 ? p.name.toLowerCase() : '';
+        const productName = pI >= 0 ? p.name?.toLowerCase() : '';
         return (
           p.market.toLowerCase().includes(productName) ||
           p.location.toLowerCase().includes(productName)
