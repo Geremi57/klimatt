@@ -6,7 +6,7 @@ import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 interface MarketPrice {
   id: string;
   market: string;
-  name: string;
+  product: string;
   location: string;
   price: number;
   currency: string;
@@ -55,7 +55,7 @@ export default function MarketCard({ market, onViewHistory }: MarketCardProps) {
               {market.location}
             </p>
             <span className="ml-2 text-sm text-muted-foreground">
-    ({market.name})
+    ({market.product})
   </span>
           </div>
           {market.isStale && <Badge variant="secondary">Offline</Badge>}
