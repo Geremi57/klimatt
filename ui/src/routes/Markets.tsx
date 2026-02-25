@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';  // Add useEffect
+import { useState, useEffect } from 'react'; // Add useEffect
 import MainLayout from '@/components/layout/MainLayout';
 import MarketCard from '@/components/markets/MarketCard';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BarChart3, Filter, RefreshCw } from 'lucide-react';  // Add RefreshCw
+import { BarChart3, Filter, RefreshCw } from 'lucide-react'; // Add RefreshCw
 import {
   CartesianGrid,
   Line,
@@ -14,6 +14,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import { usePreferredCrops } from '@/hooks/usePreferredCrops';
 
 // ==================== TYPES ====================
 
@@ -38,23 +39,26 @@ export default function MarketsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastFetched, setLastFetched] = useState<Date | null>(null);
-  
-  // Filter states
-  const [selectedProduct, setSelectedProduct] = useState('All Products');
-  const [selectedMarket, setSelectedMarket] = useState<string | null>(null);
 
-  // Get unique products from API data for filter
-  const getUniqueProducts = () => {
-    const products = prices.map(p => {
-      // Extract product name from market or location (you might need to adjust this)
-      // For now, we'll use a placeholder logic
-      if (p.market.includes('Maize')) return 'Maize';
-      if (p.market.includes('Beans')) return 'Beans';
-      if (p.market.includes('Wheat')) return 'Wheat';
-      return 'Other';
-    });
-    return ['All Products', ...new Set(products)];
-  };
+  // Filter states
+  const [selectedMarket, setSelectedMarket] = useState<string | null>(null);
+  const { preferredCrops, availableCrops } = usePreferredCrops();
+  const [selectedProducts, setSelectedProducts] =
+    useState<string[]>(preferredCrops);
+  const [products] = useState<string[]>(availableCrops);
+
+  // // Get unique products from API data for filter
+  // const getUniqueProducts = () => {
+  //   const products = prices.map((p) => {
+  //     // Extract product name from market or location (you might need to adjust this)
+  //     // For now, we'll use a placeholder logic
+  //     if (p.market.includes('Maize')) return 'Maize';
+  //     if (p.market.includes('Beans')) return 'Beans';
+  //     if (p.market.includes('Wheat')) return 'Wheat';
+  //     return 'Other';
+  //   });
+  //   return ['All Products', ...new Set(products)];
+  // };
 
   // Mock chart data (keep this for now, you can replace with real history later)
   const priceHistory = [
@@ -72,21 +76,21 @@ export default function MarketsPage() {
     console.log('📡 Fetching market prices...');
     setLoading(true);
     setError(null);
-    
+
     try {
       // The farmer's crops - customize this based on user preferences
       const farmerCommodities = ['maize', 'beans'];
-      
+
       const response = await fetch(
-        `http://localhost:8080/api/prices/latest?commodities=${farmerCommodities.join(',')}&markets=all`
+        `http://localhost:8080/api/prices/latest?commodities=${farmerCommodities.join(',')}&markets=all`,
       );
-      
+
       console.log('📥 Response status:', response.status);
-      
+
       if (!response.ok) {
         throw new Error(`Failed to fetch: ${response.status}`);
       }
-      
+
       const data = await response.json();
       console.log('✅ Data received:', data);
       setPrices(data);
@@ -94,7 +98,7 @@ export default function MarketsPage() {
     } catch (err) {
       console.error('❌ Error fetching prices:', err);
       setError(err instanceof Error ? err.message : 'Failed to load prices');
-      
+
       // For development, fallback to mock data if API fails
       console.log('⚠️ Using mock data as fallback');
       setPrices([
@@ -169,16 +173,15 @@ export default function MarketsPage() {
     }
   };
 
-  const extractProductFromMarket = (market: string): string => {
-    const marketLower = market.toLowerCase();
-    if (marketLower.includes('maize')) return 'Maize';
-    if (marketLower.includes('bean')) return 'Beans';
-    if (marketLower.includes('wheat')) return 'Wheat';
-    if (marketLower.includes('cassava')) return 'Cassava';
-    if (marketLower.includes('sorghum')) return 'Sorghum';
-    return 'Other';
-  };
-
+  // const extractProductFromMarket = (market: string): string => {
+  //   const marketLower = market.toLowerCase();
+  //   if (marketLower.includes('maize')) return 'Maize';
+  //   if (marketLower.includes('bean')) return 'Beans';
+  //   if (marketLower.includes('wheat')) return 'Wheat';
+  //   if (marketLower.includes('cassava')) return 'Cassava';
+  //   if (marketLower.includes('sorghum')) return 'Sorghum';
+  //   return 'Other';
+  // };
 
   // Load on mount
   useEffect(() => {
@@ -186,16 +189,21 @@ export default function MarketsPage() {
   }, []);
 
   // Filter prices based on selected product
-  const filteredPrices = selectedProduct === 'All Products'
+  const filteredPrices = selectedProducts.includes('All Products')
     ? prices
-    : prices.filter(p => {
+    : prices.filter((p) => {
         // This is a simple filter - you might want to adjust based on your data structure
-        const productName = selectedProduct.toLowerCase();
-        return p.market.toLowerCase().includes(productName) || 
-               p.location.toLowerCase().includes(productName);
+        const pI = selectedProducts.findIndex(
+          (pr) => pr.toLowerCase() === p.name.toLowerCase(),
+        );
+        const productName = pI >= 0 ? p.name.toLowerCase() : '';
+        return (
+          p.market.toLowerCase().includes(productName) ||
+          p.location.toLowerCase().includes(productName)
+        );
       });
 
-  const products = getUniqueProducts();
+  // const products = getUniqueProducts();
 
   // Loading state
   if (loading) {
@@ -213,8 +221,11 @@ export default function MarketsPage() {
           </div>
           <div className="px-4 py-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {[1, 2, 3, 4, 5, 6].map(i => (
-                <div key={i} className="h-64 bg-muted animate-pulse rounded-lg" />
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div
+                  key={i}
+                  className="h-64 bg-muted animate-pulse rounded-lg"
+                />
               ))}
             </div>
           </div>
@@ -281,14 +292,29 @@ export default function MarketsPage() {
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
-                  {products.map((product) => (
+                  {products.map((product, i) => (
                     <Button
-                      key={product}
+                      key={`${product}-${i}`}
                       variant={
-                        selectedProduct === product ? 'default' : 'outline'
+                        selectedProducts.findIndex(
+                          (p) => p.toLowerCase() == product.toLowerCase(),
+                        ) >= 0
+                          ? 'default'
+                          : 'outline'
                       }
                       size="sm"
-                      onClick={() => setSelectedProduct(product)}
+                      onClick={() =>
+                        setSelectedProducts((prevSt) => {
+                          const pI = prevSt.findIndex(
+                            (p) => p.toLowerCase() === product.toLowerCase(),
+                          );
+                          if (pI >= 0)
+                            return prevSt.filter(
+                              (p) => p.toLowerCase() !== product.toLowerCase(),
+                            );
+                          else return [...prevSt, product];
+                        })
+                      }
                       className="text-xs"
                     >
                       {product}
