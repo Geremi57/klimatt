@@ -320,25 +320,164 @@ func parsePriceType(s string) PriceType {
 // ==================== API ENDPOINTS ====================
 
 func main() {
-  router := gin.Default()
-  router.GET("/ping", func(c *gin.Context) {
-    c.JSON(200, gin.H{
-      "message": "pong",
-    })
-  })
+	// Parse CSV data
+	fmt.Println("📂 Loading food price data...")
+	foodData, err := ReadData(data_file)
+	if err != nil {
+		log.Fatal("Failed to load data:", err)
+	}
 
-   // Serving the UI
-	router.Static("/assets", "./ui/dist/assets")
-	router.StaticFile("/manifest.webmanifest", "./ui/dist/manifest.webmanifest")
-	router.StaticFile("/favicon.ico", "./ui/dist/favicon.ico")
-	router.NoRoute(func(c *gin.Context) {
-		if strings.HasPrefix(c.Request.URL.Path, "/api") {
-			c.JSON(http.StatusNotFound, gin.H{"error": "Not found"})
+	// Create Gin router
+	router := gin.Default()
+
+	// Enable CORS
+	router.Use(func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
 			return
 		}
-
-		c.File("./ui/dist/index.html")
+		c.Next()
 	})
 
-  router.Run() // listens on 0.0.0.0:8080 by default
+	// API Routes
+	router.GET("/ping", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "pong",
+		})
+	})
+
+	// Get all markets
+	router.GET("/api/markets", func(c *gin.Context) {
+		c.JSON(200, foodData.Markets)
+	})
+
+	// Get markets by region
+	router.GET("/api/markets/region/:region", func(c *gin.Context) {
+		region := c.Param("region")
+		var markets []MarketData
+		for _, m := range foodData.Markets {
+			if strings.EqualFold(m.Admin1, region) {
+				markets = append(markets, m)
+			}
+		}
+		c.JSON(200, markets)
+	})
+
+	// Get markets by county
+	router.GET("/api/markets/county/:county", func(c *gin.Context) {
+		county := c.Param("county")
+		var markets []MarketData
+		for _, m := range foodData.Markets {
+			if strings.EqualFold(m.Admin2, county) {
+				markets = append(markets, m)
+			}
+		}
+		c.JSON(200, markets)
+	})
+
+	// Get specific market by name
+	router.GET("/api/market/:name", func(c *gin.Context) {
+		name := c.Param("name")
+		for _, m := range foodData.Markets {
+			if strings.EqualFold(m.Name, name) {
+				c.JSON(200, m)
+				return
+			}
+		}
+		c.JSON(404, gin.H{"error": "Market not found"})
+	})
+
+	// Get all commodities
+	router.GET("/api/commodities", func(c *gin.Context) {
+		c.JSON(200, foodData.Commodities)
+	})
+
+	// Get commodities by name
+	router.GET("/api/commodities/:name", func(c *gin.Context) {
+		name := c.Param("name")
+		var commodities []Commodity
+		for _, comm := range foodData.Commodities {
+			if strings.Contains(strings.ToLower(comm.Name), strings.ToLower(name)) {
+				commodities = append(commodities, comm)
+			}
+		}
+		c.JSON(200, commodities)
+	})
+
+	// Get prices for a specific commodity in a market
+	router.GET("/api/prices/:market/:commodity", func(c *gin.Context) {
+		marketName := c.Param("market")
+		commodityName := c.Param("commodity")
+		
+		var prices []Commodity
+		for _, market := range foodData.Markets {
+			if strings.EqualFold(market.Name, marketName) {
+				for _, cat := range market.FoodCategories {
+					for _, food := range cat.Foods {
+						if strings.Contains(strings.ToLower(food.Name), strings.ToLower(commodityName)) {
+							prices = append(prices, food)
+						}
+					}
+				}
+				break
+			}
+		}
+		
+		c.JSON(200, prices)
+	})
+
+	// Debug endpoint to see parsed data structure
+	router.GET("/debug", func(c *gin.Context) {
+		summary := gin.H{
+			"total_markets":    len(foodData.Markets),
+			"total_commodities": len(foodData.Commodities),
+			"regions":           getUniqueRegions(foodData.Markets),
+			"counties":          getUniqueCounties(foodData.Markets),
+		}
+		c.JSON(200, summary)
+	})
+
+	// Serving the UI
+ router.Static("/assets", "./ui/dist/assets")
+ router.StaticFile("/manifest.webmanifest", "./ui/dist/manifest.webmanifest")
+ router.StaticFile("/favicon.ico", "./ui/dist/favicon.ico")
+ router.NoRoute(func(c *gin.Context) {
+	 if strings.HasPrefix(c.Request.URL.Path, "/api") {
+		 c.JSON(http.StatusNotFound, gin.H{"error": "Not found"})
+		 return
+	 }
+
+	 c.File("./ui/dist/index.html")
+ })
+
+router.Run() // listens on 0.0.0.0:8080 by default
 }
+
+// Helper functions for debug endpoint
+func getUniqueRegions(markets []MarketData) []string {
+	regionMap := make(map[string]bool)
+	for _, m := range markets {
+		regionMap[m.Admin1] = true
+	}
+	regions := make([]string, 0, len(regionMap))
+	for r := range regionMap {
+		regions = append(regions, r)
+	}
+	return regions
+}
+
+func getUniqueCounties(markets []MarketData) []string {
+	countyMap := make(map[string]bool)
+	for _, m := range markets {
+		countyMap[m.Admin2] = true
+	}
+	counties := make([]string, 0, len(countyMap))
+	for c := range countyMap {
+		counties = append(counties, c)
+	}
+	return counties
+}
+
