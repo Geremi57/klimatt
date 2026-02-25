@@ -1,10 +1,8 @@
-'use client';
-
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { X, Plus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Plus, X } from 'lucide-react';
+import { useState } from 'react';
 
 interface PreferredCropsProps {
   crops: string[];
@@ -67,7 +65,9 @@ export default function PreferredCrops({
         {/* Add More Crops */}
         {isExpanded && remainingCrops.length > 0 && (
           <div className="pt-2 border-t">
-            <p className="text-xs font-medium text-muted-foreground mb-2">Add more crops:</p>
+            <p className="text-xs font-medium text-muted-foreground mb-2">
+              Add more crops:
+            </p>
             <div className="flex flex-wrap gap-2">
               {remainingCrops.map((crop) => (
                 <button

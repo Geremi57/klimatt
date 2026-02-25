@@ -1,6 +1,3 @@
-'use client';
-
-import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Mail, MapPin, Phone } from 'lucide-react';
@@ -17,7 +14,10 @@ interface ProfileDisplayProps {
   onEdit: () => void;
 }
 
-export default function ProfileDisplay({ profile, onEdit }: ProfileDisplayProps) {
+export default function ProfileDisplay({
+  profile,
+  onEdit,
+}: ProfileDisplayProps) {
   if (!profile) {
     return (
       <Card className="border-accent/30 bg-accent/5">
@@ -26,7 +26,8 @@ export default function ProfileDisplay({ profile, onEdit }: ProfileDisplayProps)
         </CardHeader>
         <CardContent className="space-y-3">
           <p className="text-sm text-muted-foreground">
-            Set up your profile to sell products on the marketplace and for other farmers to contact you.
+            Set up your profile to sell products on the marketplace and for
+            other farmers to contact you.
           </p>
           <Button onClick={onEdit} className="w-full">
             Set Up Profile
@@ -57,7 +58,9 @@ export default function ProfileDisplay({ profile, onEdit }: ProfileDisplayProps)
         <div className="flex items-start gap-2">
           <MapPin className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
           <div>
-            <p className="text-xs text-muted-foreground font-medium">Location</p>
+            <p className="text-xs text-muted-foreground font-medium">
+              Location
+            </p>
             <p className="text-sm">{profile.location}</p>
           </div>
         </div>

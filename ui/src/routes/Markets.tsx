@@ -1,20 +1,18 @@
-'use client';
-
-import React, { useState } from 'react';
 import MainLayout from '@/components/layout/MainLayout';
 import MarketCard from '@/components/markets/MarketCard';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart3, Filter } from 'lucide-react';
+import { useState } from 'react';
 import {
-  LineChart,
+  CartesianGrid,
   Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
 } from 'recharts';
 
 // Mock market data
@@ -97,7 +95,14 @@ const priceHistory = [
   { date: 'Sun', price: 45.5 },
 ];
 
-const products = ['All Products', 'Maize', 'Wheat', 'Beans', 'Tomato', 'Cabbage'];
+const products = [
+  'All Products',
+  'Maize',
+  'Wheat',
+  'Beans',
+  'Tomato',
+  'Cabbage',
+];
 
 export default function MarketsPage() {
   const [selectedProduct, setSelectedProduct] = useState('Maize');
@@ -117,7 +122,9 @@ export default function MarketsPage() {
             <BarChart3 className="w-6 h-6" />
             <h1 className="text-2xl font-bold">Market Prices</h1>
           </div>
-          <p className="text-primary-foreground/90 text-sm">Current prices from local markets</p>
+          <p className="text-primary-foreground/90 text-sm">
+            Current prices from local markets
+          </p>
         </div>
 
         {/* Content */}
@@ -135,7 +142,9 @@ export default function MarketsPage() {
                 {products.map((product) => (
                   <Button
                     key={product}
-                    variant={selectedProduct === product ? 'default' : 'outline'}
+                    variant={
+                      selectedProduct === product ? 'default' : 'outline'
+                    }
                     size="sm"
                     onClick={() => setSelectedProduct(product)}
                     className="text-xs"
@@ -181,8 +190,14 @@ export default function MarketsPage() {
                 <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={priceHistory}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-                      <XAxis dataKey="date" stroke="var(--color-muted-foreground)" />
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        stroke="var(--color-border)"
+                      />
+                      <XAxis
+                        dataKey="date"
+                        stroke="var(--color-muted-foreground)"
+                      />
                       <YAxis stroke="var(--color-muted-foreground)" />
                       <Tooltip
                         contentStyle={{

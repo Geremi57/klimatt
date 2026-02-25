@@ -1,4 +1,4 @@
-import Dexie, { Table } from 'dexie';
+import Dexie, { type Table } from 'dexie';
 
 export interface Crop {
   id?: number;
@@ -56,6 +56,7 @@ export interface SyncQueue {
   id?: number;
   type: 'crop' | 'pest' | 'price' | 'diary';
   action: 'create' | 'update' | 'delete';
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any;
   timestamp: string;
   retries: number;

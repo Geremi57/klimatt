@@ -1,9 +1,7 @@
-'use client';
-
-import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { X } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 export interface FarmerContactInfo {
   name: string;
@@ -31,17 +29,23 @@ export default function EditProfileModal({
       phone: '',
       email: '',
       location: '',
-    }
+    },
   );
 
   useEffect(() => {
     if (initialData) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFormData(initialData);
     }
   }, [initialData, isOpen]);
 
   const handleSubmit = () => {
-    if (formData.name && formData.phone && formData.email && formData.location) {
+    if (
+      formData.name &&
+      formData.phone &&
+      formData.email &&
+      formData.location
+    ) {
       onSave(formData);
       onClose();
     }
@@ -137,16 +141,13 @@ export default function EditProfileModal({
 
           {/* Info Text */}
           <p className="text-xs text-muted-foreground bg-muted/30 p-3 rounded">
-            Your profile information will be saved locally and used when you post products on the marketplace.
+            Your profile information will be saved locally and used when you
+            post products on the marketplace.
           </p>
 
           {/* Action Buttons */}
           <div className="flex gap-2 pt-4">
-            <Button
-              variant="outline"
-              onClick={onClose}
-              className="flex-1"
-            >
+            <Button variant="outline" onClick={onClose} className="flex-1">
               Cancel
             </Button>
             <Button
