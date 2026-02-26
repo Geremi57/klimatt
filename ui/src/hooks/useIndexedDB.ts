@@ -1,4 +1,5 @@
 // hooks/useIndexedDB.ts
+// hooks/useIndexedDB.ts
 import { useState, useEffect, useCallback } from 'react';
 
 export interface CalendarEvent {
@@ -17,7 +18,7 @@ export interface CalendarEvent {
 }
 
 const DB_NAME = 'KlimatDB';
-const DB_VERSION = 2;
+const DB_VERSION = 3;  // CHANGE THIS FROM 2 TO 3 to match marketplace
 const STORE_NAME = 'calendarEvents';
 
 export function useIndexedDB() {
@@ -62,6 +63,8 @@ export function useIndexedDB() {
       }
     };
   }, []);
+
+  // ... rest of your hook code remains the same
 
   // Get all events
   const getAllEvents = useCallback(async (): Promise<CalendarEvent[]> => {
