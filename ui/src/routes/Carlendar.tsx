@@ -1,28 +1,28 @@
+import { useState, useMemo, useEffect } from 'react';
 import MainLayout from '@/components/layout/MainLayout';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
 import {
-  calendarHelpers,
-  defaultCalendarEvents,
-} from '@/services/calendarService';
-import {
-  AlertCircle,
   Calendar,
-  CheckCircle2,
+  Plus,
+  X,
   ChevronLeft,
   ChevronRight,
-  Droplets,
-  Package,
-  Plus,
-  RefreshCw,
-  Scissors,
   Sprout,
-  X,
+  Droplets,
+  Scissors,
+  Package,
+  AlertCircle,
+  CheckCircle2,
+  RefreshCw,
 } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { cn } from '@/lib/utils';
+import {
+  defaultCalendarEvents,
+  calendarHelpers,
+} from '@/services/calendarService';
 // At the top of your calendar.ts, replace the IndexedDB import section with:
 // At the top of your calendar.ts:
 import { useIndexedDB, type CalendarEvent } from '@/hooks/useIndexedDB';
@@ -771,7 +771,7 @@ export function CalendarPage() {
                           'p-3 rounded-lg border-2 transition-all text-center font-medium capitalize',
                           formData.type === type
                             ? 'border-primary bg-primary/10 text-primary'
-                            : 'border-border text-muted-foreground hover:bg-accent',
+                            : 'border-border text-muted-foreground',
                         )}
                       >
                         <span className="block mb-1">{getEventIcon(type)}</span>
@@ -800,7 +800,7 @@ export function CalendarPage() {
                                 : priority === 'high'
                                   ? 'border-orange-500 bg-orange-500/10 text-orange-600'
                                   : 'border-yellow-500 bg-yellow-500/10 text-yellow-600'
-                              : 'border-border text-muted-foreground hover:bg-accent',
+                              : 'border-border text-muted-foreground',
                           )}
                         >
                           {priority}

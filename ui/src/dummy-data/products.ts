@@ -1,4 +1,4 @@
-import type { MarketplaceProduct } from "@/components/marketplace/ProductCard";
+import type { MarketplaceProduct } from "@/types/marketplace";
 
 export const dummyMarketplaceProducts: MarketplaceProduct[] = [
     {

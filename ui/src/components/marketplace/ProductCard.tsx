@@ -2,21 +2,22 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { MapPin } from 'lucide-react';
 import { Link } from 'react-router';
+import type { MarketplaceProduct } from '@/types/marketplace';
 
-export interface MarketplaceProduct {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  currency: string;
-  quantity: string;
-  imageUrl: string;
-  category: string;
-  farmerName: string;
-  farmerLocation: string;
-  farmerPhone: string;
-  postedDate: string;
-}
+// export interface MarketplaceProduct {
+//   id: number;
+//   name: string;
+//   description: string;
+//   price: number;
+//   currency: string;
+//   quantity: string;
+//   imageUrl: string;
+//   category: string;
+//   farmerName: string;
+//   farmerLocation: string;
+//   farmerPhone: string;
+//   postedDate: string;
+// }
 
 interface ProductCardProps {
   product: MarketplaceProduct;

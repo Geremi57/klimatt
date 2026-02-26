@@ -53,7 +53,7 @@ export function Home() {
             </Badge>
           </div>
           <p className="text-primary-foreground/90 text-sm">
-            Welcome back, Farmer John
+            Welcome back, Farmer {profile?.name || 'Guest'}
           </p>
         </div>
 
