@@ -305,7 +305,7 @@ export default function MarketsPage() {
         </div>
 
         {/* Content */}
-        <div className="px-4 py-6 space-y-4">
+        <div className="px-4 py-6 space-y-4 max-w-4xl mx-auto">
           {/* Product Filter */}
           {products.length > 1 && (
             <Card>
@@ -382,7 +382,7 @@ export default function MarketsPage() {
 
           {/* Chart Modal */}
           {selectedMarket && (
-            <div className="fixed inset-0 bg-black/50 flex items-end z-50">
+            <div className="fixed inset-0 flex items-end z-50 max-w-6xl mx-auto pb-40">
               <div className="bg-card w-full rounded-t-2xl p-6 space-y-4 max-h-[80vh] overflow-y-auto">
                 <div className="flex items-center justify-between">
                   <div>
