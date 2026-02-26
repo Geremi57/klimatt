@@ -382,17 +382,20 @@ export default function MarketsPage() {
                             tick={{ fontSize: 12 }}
                             tickFormatter={(value) => `${selectedMarket.currency} ${value}`}
                           />
-                          <Tooltip
-                            contentStyle={{
-                              backgroundColor: 'var(--color-card)',
-                              border: '1px solid var(--color-border)',
-                              borderRadius: '8px'
-                            }}
-                            formatter={(value: number) => [
-                              `${selectedMarket.currency} ${value.toFixed(2)}`,
-                              'Price'
-                            ]}
-                          />
+                         <Tooltip
+  contentStyle={{
+    backgroundColor: 'var(--color-card)',
+    border: '1px solid var(--color-border)',
+    borderRadius: '8px'
+  }}
+  formatter={(value: number | undefined) => {
+    if (value === undefined) return ['N/A', 'Price'];
+    return [
+      `${selectedMarket?.currency || 'KES'} ${value.toFixed(2)}`,
+      'Price'
+    ];
+  }}
+/>
                           <Line
                             type="monotone"
                             dataKey="price"
