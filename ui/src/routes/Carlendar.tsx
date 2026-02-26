@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Calendar, Plus, X, ChevronLeft, ChevronRight, Sprout, Droplets, Scissors, Package, AlertCircle, CheckCircle2, Clock, RefreshCw } from 'lucide-react';
+import { Calendar, Plus, X, ChevronLeft, ChevronRight, Sprout, Droplets, Scissors, Package, AlertCircle, CheckCircle2,  RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { defaultCalendarEvents, calendarHelpers } from '@/services/calendarService';
 // At the top of your calendar.ts, replace the IndexedDB import section with:
@@ -683,7 +683,7 @@ export function CalendarPage() {
                           "p-3 rounded-lg border-2 transition-all text-center font-medium capitalize",
                           formData.type === type
                             ? 'border-primary bg-primary/10 text-primary'
-                            : 'border-border text-muted-foreground hover:bg-accent'
+                            : 'border-border text-muted-foreground'
                         )}
                       >
                         <span className="block mb-1">
@@ -713,7 +713,7 @@ export function CalendarPage() {
                               : priority === 'high'
                               ? 'border-orange-500 bg-orange-500/10 text-orange-600'
                               : 'border-yellow-500 bg-yellow-500/10 text-yellow-600'
-                            : 'border-border text-muted-foreground hover:bg-accent'
+                            : 'border-border text-muted-foreground'
                         )}
                       >
                         {priority}
