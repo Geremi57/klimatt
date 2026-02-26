@@ -365,7 +365,7 @@ export function CalendarPage() {
 
   return (
     <MainLayout>
-      <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
+      <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 ">
         {/* Header */}
         <div className="bg-primary/90 backdrop-blur-sm text-primary-foreground px-4 py-6 sticky top-0 z-10 shadow-lg">
           <div className="flex items-center justify-between gap-3 mb-3">
@@ -411,7 +411,7 @@ export function CalendarPage() {
         </div>
 
         {/* Filters */}
-        <div className="px-4 py-4 space-y-3">
+        <div className="px-4 py-4 space-y-3 max-w-4xl mx-auto">
           <Card className="border-0 shadow-sm">
             <CardContent className="pt-4">
               <div className="flex flex-wrap gap-2">
@@ -446,7 +446,7 @@ export function CalendarPage() {
         </div>
 
         {/* Content */}
-        <div className="px-4 py-2 space-y-4 pb-24">
+        <div className="px-4 py-2 space-y-4 pb-24 max-w-4xl mx-auto">
           {/* Stats Cards */}
           <div className="grid grid-cols-4 gap-2">
             <Card className="border-0 shadow-sm bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950/30 dark:to-green-900/20">
@@ -673,7 +673,7 @@ export function CalendarPage() {
 
         {/* Create Event Modal */}
         {isModalOpen && (
-          <div className="fixed inset-0 bg-black/50 flex items-end z-50">
+          <div className="fixed inset-0 flex items-end z-50 max-w-6xl mx-auto pb-40">
             <div className="bg-background w-full rounded-t-2xl p-4 space-y-4 max-h-[90vh] overflow-y-auto animate-slide-up">
               <div className="flex items-center justify-between mb-4 sticky top-0 bg-background pt-2">
                 <h2 className="text-lg font-bold">Create New Event</h2>

@@ -6,6 +6,8 @@ import { CalendarPage } from './routes/Carlendar';
 import DiaryPage from './routes/Diary';
 import MarketplacePage from './routes/Marketplace';
 import ProductDetailsPage from './routes/ProductDetails';
+import { AiChatButton } from './components/chat';
+import { Toaster } from 'sonner';
 
 function App() {
   return (
@@ -19,7 +21,20 @@ function App() {
         <Route path="diary" element={<DiaryPage />} />
         <Route path="marketplace/:productId" element={<ProductDetailsPage />} />
       </Routes>
+      
+      <AiChatButton />
+      <Toaster 
+        position="top-center"
+        toastOptions={{
+          style: {
+            backgroundColor: 'oklch(1 0 0)',
+            color: 'oklch(0.2 0.02 142.5)',
+            borderColor: 'oklch(0.92 0.01 142.5)',
+          },
+        }}
+      />
     </div>
   );
 }
+
 export default App;
