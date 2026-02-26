@@ -1,12 +1,12 @@
 'use client';
 
 import MainLayout from '@/components/layout/MainLayout';
-import type { MarketplaceProduct } from '@/components/marketplace/ProductCard';
+import type { MarketplaceProduct } from '@/types/marketplace';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { dummyMarketplaceProducts } from '@/dummy-data/products';
-import { ArrowLeft, Check, Copy, MapPin, Phone } from 'lucide-react';
+import { useMarketplaceDB } from '@/hooks/useMarketplaceDB';
+import { ArrowLeft, Check, Copy, MapPin, Phone, RefreshCw } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 
@@ -14,15 +14,34 @@ export default function ProductDetailsPage() {
   const params = useParams();
   const navigate = useNavigate();
   const productId = params.productId || '';
-  const [products] = useState<MarketplaceProduct[]>(dummyMarketplaceProducts);
+  
+  const {
+    isReady,
+    getAllProducts,
+  } = useMarketplaceDB();
+
   const [product, setProduct] = useState<MarketplaceProduct | null>(null);
+  const [loading, setLoading] = useState(true);
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
   useEffect(() => {
-    const found = products.find((p) => p.id === parseInt(productId));
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setProduct(found || null);
-  }, [productId, products]);
+    const loadProduct = async () => {
+      if (!isReady) return;
+      
+      setLoading(true);
+      try {
+        const allProducts = await getAllProducts();
+        const found = allProducts.find((p) => p.id === parseInt(productId));
+        setProduct(found || null);
+      } catch (error) {
+        console.error('Failed to load product:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProduct();
+  }, [productId, getAllProducts, isReady]);
 
   const handleCopy = (text: string, field: string) => {
     navigator.clipboard.writeText(text);
@@ -30,18 +49,32 @@ export default function ProductDetailsPage() {
     setTimeout(() => setCopiedField(null), 2000);
   };
 
+  if (loading) {
+    return (
+      <MainLayout>
+        <div className="min-h-screen bg-background flex items-center justify-center pb-20">
+          <div className="text-center">
+            <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
+            <p className="text-muted-foreground">Loading product details...</p>
+          </div>
+        </div>
+      </MainLayout>
+    );
+  }
+
   if (!product) {
     return (
       <MainLayout>
         <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 pb-20">
-          <p className="text-muted-foreground">Product not found</p>
+          <p className="text-muted-foreground mb-2">Product not found</p>
+          <p className="text-sm text-muted-foreground mb-4">Product ID: {productId}</p>
           <Button
             variant="outline"
-            onClick={() => navigate(-1)}
+            onClick={() => navigate('/marketplace')}
             className="mt-4"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Go Back
+            Back to Marketplace
           </Button>
         </div>
       </MainLayout>
