@@ -609,13 +609,18 @@ func main() {
 
 	// Serving the UI
 	router.Static("/assets", "./ui/dist/assets")
+	router.StaticFile("/sw.js", "./ui/dist/sw.js")
+	router.StaticFile("/pwa-512.png", "./ui/dist/pwa-512.png")
+	router.StaticFile("/pwa-192.png", "./ui/dist/pwa-192.png")
 	router.StaticFile("/manifest.webmanifest", "./ui/dist/manifest.webmanifest")
 	router.StaticFile("/favicon.ico", "./ui/dist/favicon.ico")
+	
 	router.NoRoute(func(c *gin.Context) {
 		if strings.HasPrefix(c.Request.URL.Path, "/api") {
 			c.JSON(http.StatusNotFound, gin.H{"error": "Not found"})
 			return
 		}
+
 		c.File("./ui/dist/index.html")
 	})
 

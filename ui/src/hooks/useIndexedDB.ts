@@ -1,5 +1,4 @@
 // hooks/useIndexedDB.ts
-// hooks/useIndexedDB.ts
 import { useState, useEffect, useCallback } from 'react';
 
 export interface CalendarEvent {
@@ -43,7 +42,7 @@ export function useIndexedDB() {
 
     openDB.onupgradeneeded = (event) => {
       const db = (event.target as IDBOpenDBRequest).result;
-      
+
       // Create calendar events store if it doesn't exist
       if (!db.objectStoreNames.contains(STORE_NAME)) {
         const store = db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
@@ -138,14 +137,14 @@ export function useIndexedDB() {
     return new Promise((resolve, reject) => {
       const transaction = db.transaction(STORE_NAME, 'readwrite');
       const store = transaction.objectStore(STORE_NAME);
-      
+
       const eventWithMeta = {
         ...event,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         synced: false,
       };
-      
+
       const request = store.add(eventWithMeta);
 
       request.onsuccess = () => resolve(request.result as number);
@@ -169,9 +168,9 @@ export function useIndexedDB() {
           updatedAt: new Date().toISOString(),
           synced: false,
         };
-        
+
         const request = store.add(eventWithMeta);
-        
+
         request.onsuccess = () => {
           ids.push(request.result as number);
           if (index === events.length - 1) {
@@ -191,9 +190,9 @@ export function useIndexedDB() {
     return new Promise((resolve, reject) => {
       const transaction = db.transaction(STORE_NAME, 'readwrite');
       const store = transaction.objectStore(STORE_NAME);
-      
+
       const getRequest = store.get(id);
-      
+
       getRequest.onsuccess = () => {
         const event = getRequest.result;
         if (!event) {

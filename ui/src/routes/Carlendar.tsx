@@ -1,14 +1,28 @@
-'use client';
-
 import { useState, useMemo, useEffect } from 'react';
 import MainLayout from '@/components/layout/MainLayout';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Calendar, Plus, X, ChevronLeft, ChevronRight, Sprout, Droplets, Scissors, Package, AlertCircle, CheckCircle2,  RefreshCw } from 'lucide-react';
+import {
+  Calendar,
+  Plus,
+  X,
+  ChevronLeft,
+  ChevronRight,
+  Sprout,
+  Droplets,
+  Scissors,
+  Package,
+  AlertCircle,
+  CheckCircle2,
+  RefreshCw,
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { defaultCalendarEvents, calendarHelpers } from '@/services/calendarService';
+import {
+  defaultCalendarEvents,
+  calendarHelpers,
+} from '@/services/calendarService';
 // At the top of your calendar.ts, replace the IndexedDB import section with:
 // At the top of your calendar.ts:
 import { useIndexedDB, type CalendarEvent } from '@/hooks/useIndexedDB';
@@ -32,9 +46,11 @@ const getEventIcon = (type: EventType) => {
 };
 
 const getEventColor = (type: EventType, priority: Priority) => {
-  if (priority === 'critical') return 'bg-red-100 dark:bg-red-950/30 border-red-200 dark:border-red-800';
-  if (priority === 'high') return 'bg-orange-100 dark:bg-orange-950/30 border-orange-200 dark:border-orange-800';
-  
+  if (priority === 'critical')
+    return 'bg-red-100 dark:bg-red-950/30 border-red-200 dark:border-red-800';
+  if (priority === 'high')
+    return 'bg-orange-100 dark:bg-orange-950/30 border-orange-200 dark:border-orange-800';
+
   switch (type) {
     case 'planting':
       return 'bg-green-100 dark:bg-green-950/30 border-green-200 dark:border-green-800';
@@ -52,19 +68,45 @@ const getEventColor = (type: EventType, priority: Priority) => {
 const getPriorityBadge = (priority: Priority) => {
   switch (priority) {
     case 'critical':
-      return <Badge variant="destructive" className="text-xs">Critical</Badge>;
+      return (
+        <Badge variant="destructive" className="text-xs">
+          Critical
+        </Badge>
+      );
     case 'high':
-      return <Badge variant="default" className="bg-orange-500 text-xs">High</Badge>;
+      return (
+        <Badge variant="default" className="bg-orange-500 text-xs">
+          High
+        </Badge>
+      );
     case 'medium':
-      return <Badge variant="secondary" className="text-xs">Medium</Badge>;
+      return (
+        <Badge variant="secondary" className="text-xs">
+          Medium
+        </Badge>
+      );
     case 'low':
-      return <Badge variant="outline" className="text-xs">Low</Badge>;
+      return (
+        <Badge variant="outline" className="text-xs">
+          Low
+        </Badge>
+      );
   }
 };
 
 const months = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December'
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
 ];
 
 export function CalendarPage() {
@@ -94,7 +136,7 @@ export function CalendarPage() {
     upcoming: 0,
     completionRate: 0,
   });
-  
+
   const [formData, setFormData] = useState({
     date: '',
     crop: '',
@@ -108,16 +150,16 @@ export function CalendarPage() {
   useEffect(() => {
     const loadEvents = async () => {
       if (!isReady) return;
-      
+
       setLoading(true);
       try {
         // Seed initial data if needed
         await seedInitialData(defaultCalendarEvents);
-        
+
         // Get events for current month
         const monthEvents = await getEventsByMonth(currentYear, currentMonth);
         setEvents(monthEvents);
-        
+
         // Update stats
         const allEvents = await getEventsByMonth(currentYear, currentMonth);
         setStats(calendarHelpers.getStats(allEvents));
@@ -135,7 +177,7 @@ export function CalendarPage() {
   useEffect(() => {
     const refreshEvents = async () => {
       if (!isReady) return;
-      
+
       const monthEvents = await getEventsByMonth(currentYear, currentMonth);
       setEvents(monthEvents);
       setStats(calendarHelpers.getStats(monthEvents));
@@ -146,13 +188,13 @@ export function CalendarPage() {
 
   // Get unique crops for filter
   const uniqueCrops = useMemo(() => {
-    const crops = events.map(e => e.crop);
+    const crops = events.map((e) => e.crop);
     return ['all', ...new Set(crops)];
   }, [events]);
 
   // Filter events based on selected filters
   const filteredEvents = useMemo(() => {
-    return events.filter(event => {
+    return events.filter((event) => {
       const cropMatch = filterCrop === 'all' || event.crop === filterCrop;
       const typeMatch = filterType === 'all' || event.type === filterType;
       return cropMatch && typeMatch;
@@ -162,18 +204,18 @@ export function CalendarPage() {
   // Group events by week
   const weeks = useMemo(() => {
     const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-    
+
     const weeks: (typeof events)[] = [];
     let week: typeof events = [];
-    
+
     for (let day = 1; day <= daysInMonth; day++) {
       const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-      const dayEvents = filteredEvents.filter(e => e.date === dateStr);
-      
+      const dayEvents = filteredEvents.filter((e) => e.date === dateStr);
+
       if (dayEvents.length > 0) {
         week.push(...dayEvents);
       }
-      
+
       // Group by week (every 7 days)
       if (day % 7 === 0 || day === daysInMonth) {
         if (week.length > 0) {
@@ -182,7 +224,7 @@ export function CalendarPage() {
         }
       }
     }
-    
+
     return weeks;
   }, [filteredEvents, currentYear, currentMonth]);
 
@@ -197,15 +239,18 @@ export function CalendarPage() {
           details: formData.details,
           completed: false,
           priority: formData.priority,
-          season: new Date(formData.date).getMonth() < 6 ? 'long-rains' : 'short-rains',
+          season:
+            new Date(formData.date).getMonth() < 6
+              ? 'long-rains'
+              : 'short-rains',
         });
 
         console.log('✅ Event added with ID:', newId);
-        
+
         // Refresh events
         const updatedEvents = await getEventsByMonth(currentYear, currentMonth);
         setEvents(updatedEvents);
-        
+
         // Reset form
         setFormData({
           date: '',
@@ -215,7 +260,7 @@ export function CalendarPage() {
           priority: 'medium',
           details: '',
         });
-        
+
         setIsModalOpen(false);
       } catch (error) {
         console.error('Failed to add event:', error);
@@ -226,20 +271,22 @@ export function CalendarPage() {
 
   const toggleEventComplete = async (eventId: number) => {
     try {
-      const event = events.find(e => e.id === eventId);
+      const event = events.find((e) => e.id === eventId);
       if (!event) return;
 
       await updateEvent(eventId, { completed: !event.completed });
-      
+
       // Update local state
-      setEvents(prev => prev.map(event => 
-        event.id === eventId 
-          ? { ...event, completed: !event.completed }
-          : event
-      ));
-      
+      setEvents((prev) =>
+        prev.map((event) =>
+          event.id === eventId
+            ? { ...event, completed: !event.completed }
+            : event,
+        ),
+      );
+
       // Update stats
-      setStats(prev => ({
+      setStats((prev) => ({
         ...prev,
         completed: prev.completed + (event.completed ? -1 : 1),
         pending: prev.pending + (event.completed ? 1 : -1),
@@ -253,11 +300,11 @@ export function CalendarPage() {
     if (confirm('Are you sure you want to delete this event?')) {
       try {
         await deleteEvent(eventId);
-        
+
         // Refresh events
         const updatedEvents = await getEventsByMonth(currentYear, currentMonth);
         setEvents(updatedEvents);
-        
+
         if (expandedEvent === eventId) {
           setExpandedEvent(null);
         }
@@ -308,9 +355,7 @@ export function CalendarPage() {
               <AlertCircle className="w-12 h-12 text-destructive mx-auto mb-4" />
               <h2 className="text-lg font-bold mb-2">Database Error</h2>
               <p className="text-muted-foreground mb-4">{dbError}</p>
-              <Button onClick={() => window.location.reload()}>
-                Retry
-              </Button>
+              <Button onClick={() => window.location.reload()}>Retry</Button>
             </CardContent>
           </Card>
         </div>
@@ -340,7 +385,7 @@ export function CalendarPage() {
               Add Event
             </Button>
           </div>
-          
+
           {/* Month Navigation */}
           <div className="flex items-center justify-between">
             <Button
@@ -375,16 +420,18 @@ export function CalendarPage() {
                   onChange={(e) => setFilterCrop(e.target.value)}
                   className="px-3 py-2 rounded-lg border bg-background text-sm"
                 >
-                  {uniqueCrops.map(crop => (
+                  {uniqueCrops.map((crop) => (
                     <option key={crop} value={crop}>
                       {crop === 'all' ? 'All Crops' : crop}
                     </option>
                   ))}
                 </select>
-                
+
                 <select
                   value={filterType}
-                  onChange={(e) => setFilterType(e.target.value as EventType | 'all')}
+                  onChange={(e) =>
+                    setFilterType(e.target.value as EventType | 'all')
+                  }
                   className="px-3 py-2 rounded-lg border bg-background text-sm"
                 >
                   <option value="all">All Types</option>
@@ -406,28 +453,36 @@ export function CalendarPage() {
               <CardContent className="p-3 text-center">
                 <Sprout className="w-5 h-5 mx-auto mb-1 text-green-600" />
                 <p className="text-xs text-muted-foreground">Planting</p>
-                <p className="text-lg font-bold">{events.filter(e => e.type === 'planting').length}</p>
+                <p className="text-lg font-bold">
+                  {events.filter((e) => e.type === 'planting').length}
+                </p>
               </CardContent>
             </Card>
             <Card className="border-0 shadow-sm bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950/30 dark:to-blue-900/20">
               <CardContent className="p-3 text-center">
                 <Scissors className="w-5 h-5 mx-auto mb-1 text-blue-600" />
                 <p className="text-xs text-muted-foreground">Maintenance</p>
-                <p className="text-lg font-bold">{events.filter(e => e.type === 'maintenance').length}</p>
+                <p className="text-lg font-bold">
+                  {events.filter((e) => e.type === 'maintenance').length}
+                </p>
               </CardContent>
             </Card>
             <Card className="border-0 shadow-sm bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/30 dark:to-amber-900/20">
               <CardContent className="p-3 text-center">
                 <Package className="w-5 h-5 mx-auto mb-1 text-amber-600" />
                 <p className="text-xs text-muted-foreground">Harvest</p>
-                <p className="text-lg font-bold">{events.filter(e => e.type === 'harvest').length}</p>
+                <p className="text-lg font-bold">
+                  {events.filter((e) => e.type === 'harvest').length}
+                </p>
               </CardContent>
             </Card>
             <Card className="border-0 shadow-sm bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950/30 dark:to-purple-900/20">
               <CardContent className="p-3 text-center">
                 <Droplets className="w-5 h-5 mx-auto mb-1 text-purple-600" />
                 <p className="text-xs text-muted-foreground">Prep</p>
-                <p className="text-lg font-bold">{events.filter(e => e.type === 'preparation').length}</p>
+                <p className="text-lg font-bold">
+                  {events.filter((e) => e.type === 'preparation').length}
+                </p>
               </CardContent>
             </Card>
           </div>
@@ -439,12 +494,16 @@ export function CalendarPage() {
                 <div className="flex justify-between items-center">
                   {stats.overdue > 0 && (
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-destructive">⚠️ {stats.overdue} overdue</span>
+                      <span className="text-sm font-medium text-destructive">
+                        ⚠️ {stats.overdue} overdue
+                      </span>
                     </div>
                   )}
                   {stats.upcoming > 0 && (
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-primary">📅 {stats.upcoming} upcoming this week</span>
+                      <span className="text-sm font-medium text-primary">
+                        📅 {stats.upcoming} upcoming this week
+                      </span>
                     </div>
                   )}
                   <div className="flex items-center gap-2">
@@ -462,9 +521,11 @@ export function CalendarPage() {
             <Card className="border-0 shadow-sm bg-muted/50">
               <CardContent className="p-8 text-center">
                 <Calendar className="w-12 h-12 mx-auto mb-3 text-muted-foreground/50" />
-                <p className="text-muted-foreground">No events scheduled for this month</p>
-                <Button 
-                  variant="link" 
+                <p className="text-muted-foreground">
+                  No events scheduled for this month
+                </p>
+                <Button
+                  variant="link"
                   onClick={() => setIsModalOpen(true)}
                   className="mt-2"
                 >
@@ -482,12 +543,17 @@ export function CalendarPage() {
                   <Card
                     key={event.id}
                     className={cn(
-                      "border-2 cursor-pointer hover:shadow-md transition-all",
-                      getEventColor(event.type as EventType, event.priority as Priority),
-                      event.completed && "opacity-60"
+                      'border-2 cursor-pointer hover:shadow-md transition-all',
+                      getEventColor(
+                        event.type as EventType,
+                        event.priority as Priority,
+                      ),
+                      event.completed && 'opacity-60',
                     )}
                     onClick={() =>
-                      setExpandedEvent(expandedEvent === event.id ? null : event.id)
+                      setExpandedEvent(
+                        expandedEvent === event.id ? null : event.id,
+                      )
                     }
                   >
                     <CardHeader className="p-4 pb-2">
@@ -502,8 +568,14 @@ export function CalendarPage() {
                             </CardTitle>
                             <div className="flex items-center gap-2 shrink-0">
                               {getPriorityBadge(event.priority as Priority)}
-                              <Badge variant="outline" className="text-xs whitespace-nowrap">
-                                {new Date(event.date).toLocaleDateString('en-US', { day: 'numeric', month: 'short' })}
+                              <Badge
+                                variant="outline"
+                                className="text-xs whitespace-nowrap"
+                              >
+                                {new Date(event.date).toLocaleDateString(
+                                  'en-US',
+                                  { day: 'numeric', month: 'short' },
+                                )}
                               </Badge>
                             </div>
                           </div>
@@ -528,33 +600,42 @@ export function CalendarPage() {
                         </Button>
                       </div>
                     </CardHeader>
-                    
+
                     {expandedEvent === event.id && (
                       <CardContent className="p-4 pt-2 border-t border-border/50">
                         <div className="space-y-3 text-sm">
                           <div className="flex items-start gap-2 p-2 bg-background/50 rounded-lg">
                             <AlertCircle className="w-4 h-4 text-muted-foreground shrink-0 mt-0.5" />
-                            <p className="text-muted-foreground">{event.details}</p>
+                            <p className="text-muted-foreground">
+                              {event.details}
+                            </p>
                           </div>
-                          
+
                           <div className="grid grid-cols-2 gap-2">
                             <div className="p-2 bg-background/50 rounded-lg">
-                              <p className="text-xs text-muted-foreground mb-1">Crop</p>
+                              <p className="text-xs text-muted-foreground mb-1">
+                                Crop
+                              </p>
                               <p className="font-medium">{event.crop}</p>
                             </div>
                             <div className="p-2 bg-background/50 rounded-lg">
-                              <p className="text-xs text-muted-foreground mb-1">Date</p>
+                              <p className="text-xs text-muted-foreground mb-1">
+                                Date
+                              </p>
                               <p className="font-medium">
-                                {new Date(event.date).toLocaleDateString('en-US', { 
-                                  weekday: 'long', 
-                                  year: 'numeric', 
-                                  month: 'long', 
-                                  day: 'numeric' 
-                                })}
+                                {new Date(event.date).toLocaleDateString(
+                                  'en-US',
+                                  {
+                                    weekday: 'long',
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                  },
+                                )}
                               </p>
                             </div>
                           </div>
-                          
+
                           <div className="flex gap-2 pt-2">
                             <Button
                               size="sm"
@@ -675,20 +756,25 @@ export function CalendarPage() {
                     Event Type
                   </label>
                   <div className="grid grid-cols-2 gap-2">
-                    {(['planting', 'maintenance', 'harvest', 'preparation'] as EventType[]).map((type) => (
+                    {(
+                      [
+                        'planting',
+                        'maintenance',
+                        'harvest',
+                        'preparation',
+                      ] as EventType[]
+                    ).map((type) => (
                       <button
                         key={type}
                         onClick={() => setFormData({ ...formData, type })}
                         className={cn(
-                          "p-3 rounded-lg border-2 transition-all text-center font-medium capitalize",
+                          'p-3 rounded-lg border-2 transition-all text-center font-medium capitalize',
                           formData.type === type
                             ? 'border-primary bg-primary/10 text-primary'
-                            : 'border-border text-muted-foreground'
+                            : 'border-border text-muted-foreground',
                         )}
                       >
-                        <span className="block mb-1">
-                          {getEventIcon(type)}
-                        </span>
+                        <span className="block mb-1">{getEventIcon(type)}</span>
                         {type}
                       </button>
                     ))}
@@ -701,24 +787,26 @@ export function CalendarPage() {
                     Priority Level
                   </label>
                   <div className="grid grid-cols-3 gap-2">
-                    {(['critical', 'high', 'medium'] as Priority[]).map((priority) => (
-                      <button
-                        key={priority}
-                        onClick={() => setFormData({ ...formData, priority })}
-                        className={cn(
-                          "p-2 rounded-lg border-2 transition-all text-center font-medium capitalize",
-                          formData.priority === priority
-                            ? priority === 'critical'
-                              ? 'border-destructive bg-destructive/10 text-destructive'
-                              : priority === 'high'
-                              ? 'border-orange-500 bg-orange-500/10 text-orange-600'
-                              : 'border-yellow-500 bg-yellow-500/10 text-yellow-600'
-                            : 'border-border text-muted-foreground'
-                        )}
-                      >
-                        {priority}
-                      </button>
-                    ))}
+                    {(['critical', 'high', 'medium'] as Priority[]).map(
+                      (priority) => (
+                        <button
+                          key={priority}
+                          onClick={() => setFormData({ ...formData, priority })}
+                          className={cn(
+                            'p-2 rounded-lg border-2 transition-all text-center font-medium capitalize',
+                            formData.priority === priority
+                              ? priority === 'critical'
+                                ? 'border-destructive bg-destructive/10 text-destructive'
+                                : priority === 'high'
+                                  ? 'border-orange-500 bg-orange-500/10 text-orange-600'
+                                  : 'border-yellow-500 bg-yellow-500/10 text-yellow-600'
+                              : 'border-border text-muted-foreground',
+                          )}
+                        >
+                          {priority}
+                        </button>
+                      ),
+                    )}
                   </div>
                 </div>
 
