@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 import type { FarmerContactInfo, MarketplaceProduct } from '@/types/marketplace';
 
 const DB_NAME = 'KlimatDB';
-const DB_VERSION = 6; // CHANGE FROM 4 TO 6
+const DB_VERSION = 7; // CHANGE FROM 4 TO 6
 const PROFILE_STORE = 'farmerProfile';
 const PRODUCTS_STORE = 'marketplaceProducts';
 
