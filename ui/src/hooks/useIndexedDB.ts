@@ -17,7 +17,7 @@ export interface CalendarEvent {
 }
 
 const DB_NAME = 'KlimatDB';
-const DB_VERSION = 7; // Increment to 7 to force upgrade
+const DB_VERSION = 8; // Increment to 7 to force upgrade
 const STORE_NAME = 'calendarEvents';
 
 export function useIndexedDB() {
